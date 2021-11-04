@@ -175,6 +175,7 @@ namespace QuizletClone.Controllers
                         HttpContext.Session.SetString("SessionuAva", item.AvatarUrl);
                         HttpContext.Session.SetString("SessionuEmail", item.Email);
                         HttpContext.Session.SetString("SessionuDOB", (item.Dob).ToString());
+                        TempData["uid"] = HttpContext.Session.GetInt32("SessionuID");
                         TempData["username"] = HttpContext.Session.GetString("SessionuName");
                         TempData["userAva"] = HttpContext.Session.GetString("SessionuAva");
                         return RedirectToAction("Index", "Home");

@@ -22,7 +22,7 @@
                         <li class="nav-item">
                             <a class="nav-link text-light" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
-                        @if (TempData.Count > 0 && TempData.Peek("username") != null)
+                        @if (TempData.ContainsKey("username"))
                         {
                             <li class="nav-item">
                                 <a class="nav-link text-light" asp-area="" asp-controller="Home" asp-action="MyLibrary">Your Library</a>
@@ -50,7 +50,7 @@
                                     <span class="text-light">
                                         <img src="@TempData.Peek("userAva")" style="width:35%;height:85%;cursor:pointer" class="dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" />
                                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                            <a class="dropdown-item" href="#">Account</a>
+                                            <a class="dropdown-item" asp-controller="Flashcard" asp-action="User" asp-route-id="@TempData.Peek("uid")">Account</a>
                                             <a class="dropdown-item" asp-controller="Home" asp-action="Logout">Log out</a>
                                         </div>
                                         Hello @TempData.Peek("username")!!

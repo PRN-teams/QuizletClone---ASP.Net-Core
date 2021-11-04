@@ -88,6 +88,21 @@ namespace QuizletClone.Controllers
         [Route("Flashcard/Room/{id:int}")]
         public ActionResult Room(int id)
         {
+            TempData["getID"] = id;
+            var myQuiz = (from s in _context.SetStudyQuizzes
+                          join q in _context.Quizzes on s.QuizId equals q.Id
+                          select new { QuizID = s.QuizId, QuizTerm = q.Term, QuizDef = q.Definition, sID = s.SetStudyId }).ToList();
+            List<Quiz> quizzes = new List<Quiz>();
+            foreach (var item in myQuiz.Where(item => item.sID == id))
+            {
+                quizzes.Add(new Quiz { Id = item.QuizID, Term = item.QuizTerm, Definition = item.QuizDef });
+            }
+            if (quizzes.Count == 0)
+            {
+                return RedirectToAction("Error", "Flashcard");
+            }
+            ViewBag.getFirst = quizzes.First();
+            ViewBag.getQuiz = quizzes;
             if (TempData.Peek("username") == null)
             {
                 return RedirectToAction("Login", "Home");
@@ -98,8 +113,46 @@ namespace QuizletClone.Controllers
         [Route("Flashcard/User/{id:int}")]
         public ActionResult User(int id)
         {
+            var a = (from u in _context.Users where u.Id == id 
+                    select new { Username=u.Username, Id= u.Id, Dob= u.Dob, Ava = u.AvatarUrl,Email = u.Email }).ToList().SingleOrDefault();
+            User users = new User() {AvatarUrl = a.Ava, Id = a.Id, Dob = a.Dob,Username = a.Username,Email = a.Email };
+            ViewBag.UserInfo = users;
+            //Display quiz
+            //Display data
+            Dictionary<User, SetStudy> mylist = new Dictionary<User, SetStudy>();
+            Dictionary<int, int> gettotalTerm = new Dictionary<int, int>();
+            var model = (from user in _context.Users
+                         join set_study in _context.SetStudies on user.Id equals set_study.UserId
+                         select new { uAvar = user.AvatarUrl, uName = user.Username, Title = set_study.Title, setID = set_study.Id, uId = user.Id }).ToList();
+            var query = (from quizstudy in _context.SetStudyQuizzes group quizstudy by quizstudy.SetStudyId into setGroup select new { Myset = setGroup.Key, Count = setGroup.Count() }).ToList();
+            var result = (from m in model
+                          join q in query on m.setID equals q.Myset
+                          select new
+                          {
+                              uAvar = m.uAvar,
+                              uName = m.uName,
+                              uID = m.uId,
+                              sTitle = m.Title,
+                              sID = m.setID,
+                              totalTerm = q.Count
+                          }).ToList();
+            foreach (var item in result)
+            {
+                mylist.Add(new Models.User { Id = item.uID, Username = item.uName, AvatarUrl = item.uAvar }, new SetStudy { Id = item.sID, Title = item.sTitle });
+                gettotalTerm.Add(item.sID, item.totalTerm);
+            }
+            var set = (from myset in mylist where myset.Key.Username == users.Username select myset).ToList();
+            ViewBag.MySet = set;
+            ViewBag.TotalQuiz = gettotalTerm;
             return View();
         }
+
+
+        public ActionResult Congrats()
+        {
+            return View();
+        }
+
         // POST: Flashcard/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -130,12 +183,6 @@ namespace QuizletClone.Controllers
             {
                 return View();
             }
-        }
-
-        // GET: Flashcard/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
         }
 
         // POST: Flashcard/Delete/5
