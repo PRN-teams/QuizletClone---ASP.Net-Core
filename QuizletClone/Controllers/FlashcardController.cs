@@ -38,7 +38,6 @@ namespace QuizletClone.Controllers
             }
             ViewBag.getFirst = quizzes.First();
             ViewBag.getQuiz = quizzes;
-            
             var user = (from u in _context.Users join q in (from s in _context.SetStudies where s.Id == id select new { userID = s.UserId }) on 
                         u.Id equals q.userID select new {uID = u.Id,uName = u.Username,uAva = u.AvatarUrl }).ToList();
             User quizuser = new User() {Username = user[0].uName, Id = user[0].uID, AvatarUrl = user[0].uAva };
@@ -58,10 +57,43 @@ namespace QuizletClone.Controllers
         [Route("Flashcard/Learning/{id:int}")]
         public ActionResult Learning(int id)
         {
+            ViewBag.getID = id;
             if (TempData.Peek("username") == null)
             {
                 return RedirectToAction("Login", "Home");
             }
+            var a = (from s in _context.SetStudies where s.Id == id select s.Title).FirstOrDefault();
+            ViewBag.Title =a ;
+            var myQuiz = (from s in _context.SetStudyQuizzes
+                          join q in _context.Quizzes on s.QuizId equals q.Id
+                          select new { QuizID = s.QuizId, QuizTerm = q.Term, QuizDef = q.Definition, sID = s.SetStudyId }).ToList();
+            List<Quiz> quizzes = new List<Quiz>();
+            foreach (var item in myQuiz.Where(item => item.sID == id))
+            {
+                quizzes.Add(new Quiz { Id = item.QuizID, Term = item.QuizTerm, Definition = item.QuizDef });
+            }
+            if (quizzes.Count == 0)
+            {
+                return RedirectToAction("Error", "Flashcard");
+            }
+            ViewBag.getFirst = quizzes.First();
+            ViewBag.getQuiz = quizzes;
+            Random rnd = new Random();
+            int maxValue = (from q in quizzes select q.Id).ToList().OrderByDescending(x => x).First();
+            List<List<Quiz>> multipleChoice = new List<List<Quiz>>();
+            for (int i = 0; i < quizzes.Count; i++)
+            {
+                List<Quiz> getRandomQuiz = new List<Quiz>();
+                getRandomQuiz.Add(new Quiz() { Id = quizzes[i].Id, Term = quizzes[i].Term });
+                for (int j = 0; j < 3; j++)
+                {
+                    int rand = rnd.Next(maxValue);
+                    getRandomQuiz.Add(new Quiz() { Id = rand, Term = (from q in _context.Quizzes where q.Id == rand select q.Term).First() });
+                }
+                getRandomQuiz = getRandomQuiz.OrderBy(item => rnd.Next()).ToList();
+                multipleChoice.Add(getRandomQuiz);
+            }
+            ViewBag.MultipleChoiceSet = multipleChoice;
             return View();
         }
 
