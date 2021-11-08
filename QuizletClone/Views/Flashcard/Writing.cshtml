@@ -31,6 +31,7 @@
         var getquizleft = @ViewBag.getQuiz.Count;
         var incorrect = 0;
         var correct = 0;
+        //Progress bar on change
         OnEvent(document).on('click', '.btn-warning', function (e) {
             $('.carousel-inner div.active').find('#form12').each(function () {
                 input_val = $(this).val();
@@ -43,6 +44,7 @@
                 $("#form12").css("border-bottom", "3px solid green");
                 $("#myCarousel").carousel("next");
                 correct++;
+                document.getElementById("correctTerm").innerHTML = correct;
             }
             //Fasle
             else {
@@ -54,17 +56,24 @@
                 $("#myCarousel").carousel("pause");
             }
             console.log(input_val + " , " + result_val);
-            console.log(incorrect); $(".incorrect").css({ "width": (incorrect * 100) / (100 *@ViewBag.getQuiz.Count) * 100 + "%" });
-            console.log(correct); $(".correct").css({ "width": (correct * 100) / (100 *@ViewBag.getQuiz.Count) * 100 + "%" });
+            $(".incorrect").css({ "width": (incorrect * 100) / (100 *@ViewBag.getQuiz.Count) * 100 + "%" });
+            $(".correct").css({ "width": (correct * 100) / (100 *@ViewBag.getQuiz.Count) * 100 + "%" });
         });
 
-        $("#myCarousel").on('slide.bs.carousel', function () {
+        $("#myCarousel").on('slide.bs.carousel', function (event) {
             getquizleft = getquizleft - 1;
             document.getElementById("totalleft").innerHTML = getquizleft;
             $(".alert").css("visibility", "hidden");
             $(".getnext_ca").css("visibility", "hidden");
-             $(".totalleft").css({ "width": (getquizleft * 100) / (100 *@ViewBag.getQuiz.Count) * 100 + "%" });
-    });
+            $(".totalleft").css({ "width": (getquizleft * 100) / (100 *@ViewBag.getQuiz.Count) * 100 + "%" });
+             console.log(event.from +" "+@ViewBag.getQuiz.Count );
+            if (event.from >= @ViewBag.getQuiz.Count-1 && incorrect === 0) {
+                window.location.href = '@Url.Action("Congrats")';
+            }
+            if (event.from >= @ViewBag.getQuiz.Count-1 && incorrect !== 0) {
+                window.location.href = '@Url.Action("Continue")';
+            }
+        });
     $(".getnext_ca").click(function () {
         $("#myCarousel").carousel("next");
     });
@@ -75,7 +84,6 @@
         $("#myCarousel").carousel("next");
     });
 
-        //Progress bar on change
 
     </script>
 }
@@ -110,7 +118,7 @@
 
             <div style="display: flex; justify-content: space-between;">
                 <h6 class="my-2">Correct</h6>
-                <h6 class="my-2 ">0</h6>
+                <h6 class="my-2" id="correctTerm">0</h6>
             </div>
         </div>
 
