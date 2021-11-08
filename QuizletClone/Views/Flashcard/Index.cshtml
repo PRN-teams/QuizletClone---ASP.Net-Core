@@ -64,18 +64,18 @@
                         </div>
                     </div>
 
-                    @foreach (var item in ViewBag.getQuiz)
+                    @for (int i = 1; i < ViewBag.getQuiz.Count; i++)
                     {
                         <div class="item pt-5" style="justify-content:center">
                             <div class="card-container">
                                 <div class="card text-white bg-secondary mx-3 card-front mycard" style="width:54rem;height:35rem">
                                     <div class="card-body" style="display: flex; justify-content: center; align-items: center; ">
-                                        <h3 class="card-text">@item.Term</h3>
+                                        <h3 class="card-text">@ViewBag.getQuiz[i].Term</h3>
                                     </div>
                                 </div>
                                 <div class="card text-white bg-secondary mx-3 card-back mycard" style="width:54rem;height:35rem">
                                     <div class="card-body"  style="display: flex; justify-content: center; align-items: center; ">
-                                        <p class="card-text h3">@item.Definition</p>
+                                        <p class="card-text h3">@ViewBag.getQuiz[i].Definition</p>
                                     </div>
                                 </div>
                             </div>

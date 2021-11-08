@@ -100,10 +100,28 @@ namespace QuizletClone.Controllers
         [Route("Flashcard/Writing/{id:int}")]
         public ActionResult Writing(int id)
         {
+            ViewBag.getID = id;
+            var a = (from s in _context.SetStudies where s.Id == id select s.Title).FirstOrDefault();
+            ViewBag.Title = a;
             if (TempData.Peek("username") == null)
             {
                 return RedirectToAction("Login", "Home");
             }
+            var myQuiz = (from s in _context.SetStudyQuizzes
+                          join q in _context.Quizzes on s.QuizId equals q.Id
+                          select new { QuizID = s.QuizId, QuizTerm = q.Term, QuizDef = q.Definition, sID = s.SetStudyId }).ToList();
+            List<Quiz> quizzes = new List<Quiz>();
+            foreach (var item in myQuiz.Where(item => item.sID == id))
+            {
+                quizzes.Add(new Quiz { Id = item.QuizID, Term = item.QuizTerm, Definition = item.QuizDef });
+            }
+            if (quizzes.Count == 0)
+            {
+                return RedirectToAction("Error", "Flashcard");
+            }
+            ViewBag.getFirst = quizzes.First();
+            ViewBag.getQuiz = quizzes;
+
             return View();
         }
 
