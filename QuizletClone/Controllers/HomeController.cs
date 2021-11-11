@@ -7,14 +7,18 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Google;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using System;
+using System.Net.Mail;
 
 namespace QuizletClone.Controllers
 {
 
     //Có 2 Action trong Controller Home là: Index và Privacy
     //==> Trong thư mục Home cũng sẽ có 2 View tương ứng với tên là Index và Privacy
-
-
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
@@ -29,6 +33,7 @@ namespace QuizletClone.Controllers
 
         //Cac Controller va Action
         // controller: IActionResult, Action: Index
+       
         public IActionResult Index()
         {
             //Display data
@@ -150,7 +155,17 @@ namespace QuizletClone.Controllers
             return View();
         }
 
-       
+        public IActionResult CreateQuiz()
+        {
+            if (TempData.Peek("username") == null)
+            {
+                return RedirectToAction("Login", "Home");
+            }
+            
+            return View();
+        }
+
+
         public IActionResult Login()
         {
             if (TempData.Peek("username") != null)
@@ -158,6 +173,29 @@ namespace QuizletClone.Controllers
                 return RedirectToAction("Index", "Home");
             }
             return View();
+        }
+        [Route("google-login")]
+        public IActionResult GoogleLogin()
+        {
+            var properties = new AuthenticationProperties { RedirectUri = Url.Action("GoogleResponse") };
+            return Challenge(properties, GoogleDefaults.AuthenticationScheme);
+        }
+
+        [Route("google-response")]
+        public async Task<IActionResult> GoogleResponse()
+        {
+            var result = await HttpContext.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+
+            var claims = result.Principal.Identities
+                .FirstOrDefault().Claims.Select(claim => new
+                {
+                    claim.Issuer,
+                    claim.OriginalIssuer,
+                    claim.Type,
+                    claim.Value
+                });
+
+            return Json(claims);
         }
 
         [HttpPost]
@@ -216,6 +254,117 @@ namespace QuizletClone.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+
+        
+        public IActionResult ForgotPassword()
+        {
+            return View();
+
+        }
+
+        string MailBody = "<!DOCTYPE html>"+
+                                "<html>"+
+"<body marginheight=\"0\" topmargin=\"0\" marginwidth=\"0\" style=\"margin: 0px; background-color: #f2f3f8;\" leftmargin=\"0\">"
+ +
+ " <table cellspacing = \"0\" border=\"0\" cellpadding=\"0\" width=\"100%\" bgcolor=\"#f2f3f8\" style=\"@import url(https://fonts.googleapis.com/css?family=Rubik:300,400,500,700|Open+Sans:300,400,600,700); font-family: 'Open Sans', sans-serif;\">"
+   +" <tr>" +
+     " <td>" 
+      +  "<table style = \"background-color: #f2f3f8; max-width:670px;  margin:0 auto;\" width=\"100%\" border=\"0\" align=\"center\" cellpadding=\"0\" cellspacing=\"0\">"
+      +    "<tr>"
+        +    "<td style = \"height:80px;\" > &nbsp;</td>"
+      +"    </tr>"
+       +"    </tr>"
+          +   "<td style = \"text-align:center;\" >"
+          + "<a href=\"http://localhost:9873/ \" title=\"logo\" target=\"_blank\">"
+         +       " <img width = \"60\" src=\"https://i.ibb.co/hL4XZp2/android-chrome-192x192.png\" title=\"logo\" alt=\"logo\">"
+        + "</a>"
+          + "    </td>"
+        + "    </tr>"
+       +    "<tr>"
+       +     "<td style = \"height:20px;\" > &nbsp;</td>"
+     +"    </tr>"
+   +    "<tr>"
+           + "<td>"
+             + "<table width = \"95%\" border=\"0\" align=\"center\" cellpadding=\"0\" cellspacing=\"0\" style=\"max-width:670px;background:#fff; border-radius:3px; text-align:center;-webkit-box-shadow:0 6px 18px 0 rgba(0,0,0,.06);-moz-box-shadow:0 6px 18px 0 rgba(0,0,0,.06);box-shadow:0 6px 18px 0 rgba(0,0,0,.06);\">"
+            +    "<tr>"
+               +   "<td style = \"height:40px;\" > &nbsp;</td>"
+             +"    </tr>"
+              +    "<tr>"
+                +  "<td style = \"padding:0 35px;\" >"
+                +    "<h1 style=\"color:#1e1e2d; font-weight:500; margin:0;font-size:32px;font-family:'Rubik',sans-serif;\">You have "
+                     + "requested to reset your password</h1>"
+                   + "<span style = \"display:inline-block; vertical-align:middle; margin:29px 0 26px; border-bottom:1px solid #cecece; width:100px;\" ></ span >"
+                    +"<p style=\"color:#455056; font-size:15px;line-height:24px; margin:0;\">"
+                     + "We cannot simply send you your old password.A unique link to reset your"
+                      +"password has been generated for you.To reset your password, click the"
+                    +  "following link and follow the instructions."
+                   + "</p>"
+                   + " <a href = \"http://localhost:9873/Home/Reset_Password \" style= \"background:#20e277;text-decoration:none !important; font-weight:500; margin-top:35px; color:#fff;text-transform:uppercase; font-size:14px;padding:10px 24px;display:inline-block;border-radius:50px;\" > Reset"
+                   + "Password</a>"
+                 +"  </td>"
+                +"    </tr>"
+                +"<tr>"
+                 +" <td style = \"height:40px;\" > &nbsp;</td>"
+                 +"    </tr>"
+             + "</table>"
+           +"  </td>"
+         +" <tr>"
+           +" <td style = \"height:20px;\" > &nbsp;</td>"
+           +"    </tr>"
+        +  "<tr>"
+          +"  <td style = \"text-align:center;\" >"
+            +" <p style=\"font-size:14px; color:rgba(69, 80, 86, 0.7411764705882353); line-height:18px; margin:0 0 0;\">&copy; <strong>www.quizletClone.com</strong></p>"
+          +"  </td>"
+         +"    </tr>"
+         +"    </tr>"
+         +"   <td style = \"height:80px;\" > &nbsp;</td>"
+      +"    </tr>"
+     +"   </table>"
+    +"  </td>"
+  +"  </tr>"
+ +" </table>"
++"</body>"
++ "</html>";
+        string subject = "Reset Password";
+        string mailtitle = "Email from Quizlet CLone";
+        string fromemail = "tranthe150186@fpt.edu.vn";
+        string fromemailpw = "Jay.empty19";
+
+        [HttpPost]
+        public IActionResult ForgotPassword(string email)
+        {
+
+            //Email & Content
+            string toemail = Convert.ToString(email);
+            MailMessage message = new MailMessage(new MailAddress(fromemail,mailtitle),new MailAddress(toemail));
+            message.Subject = subject;
+            message.Body = MailBody;
+            message.IsBodyHtml = true;
+           
+            //Server Detail
+            SmtpClient smtp = new SmtpClient();
+            //gmail ports = 465(SSL) ir 587(TSL)
+            smtp.Host = "smtp.gmail.com";
+            smtp.Port = 587;
+            smtp.EnableSsl = true;
+            smtp.DeliveryMethod = SmtpDeliveryMethod.Network;
+
+            //Credentials
+            System.Net.NetworkCredential credential = new System.Net.NetworkCredential();
+            credential.UserName = fromemail;
+            credential.Password = fromemailpw;
+            smtp.UseDefaultCredentials = false;
+            smtp.Credentials = credential;
+
+            smtp.Send(message);
+
+            ViewBag.EmailSendMessage = "Email sent successfully!! Please check your email";
+            return View();
+        }
+        public IActionResult Reset_Password()
+        {
+            return View();
         }
     }
 }

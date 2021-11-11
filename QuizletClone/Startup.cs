@@ -9,6 +9,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using QuizletClone.Models;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace QuizletClone
 {
@@ -33,6 +34,34 @@ namespace QuizletClone
                 option.Cookie.Name = "MyQuizletClone";
                 option.IdleTimeout = new TimeSpan(2, 30, 0); //2 tieng ruoi
             });
+
+            services.AddAuthentication(options =>
+            {
+                options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            })
+                .AddCookie(options =>
+                {
+                    options.LoginPath = "/Login/google-login"; // Must be lowercase
+                })
+             .AddGoogle(googleOptions =>
+             {
+                 // ?oc thong tin Authentication:Google tu appsettings.json
+                 IConfigurationSection googleAuthNSection = Configuration.GetSection("Authentication:Google");
+
+                 // Thiet lap ClientID va ClientSecret de truy cap API google
+                 googleOptions.ClientId = googleAuthNSection["ClientId"];
+                 googleOptions.ClientSecret = googleAuthNSection["ClientSecret"];
+                 // Cau hinh Url callbacklai tu google (ko thiet lap thi mac dinh la /signin-google)
+                 googleOptions.CallbackPath = "/Google-login";
+
+             })
+             .AddFacebook(option =>
+             {
+                 IConfigurationSection facebookAuthNSection = Configuration.GetSection("Authentication:Facebook");
+                 option.AppId = facebookAuthNSection["ClientId"];
+                 option.ClientSecret = facebookAuthNSection["ClientSecret"];
+             });
+
             services.AddControllersWithViews();
         }
 
@@ -52,6 +81,8 @@ namespace QuizletClone
             app.UseSession();
 
             app.UseRouting();
+
+            app.UseAuthentication();
 
             app.UseAuthorization();
 

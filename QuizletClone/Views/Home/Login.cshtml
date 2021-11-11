@@ -56,7 +56,7 @@
                             </button>
 
                             <button type="button" class="btn btn-primary btn-floating mx-1">
-                                <i class="fab fa-linkedin-in"></i>
+                                <a asp-controller="Home" asp-action="GoogleLogin"><i class="fab fa-google"></i></a>
                             </button>
                         </div>
 
@@ -85,7 +85,7 @@
                                     Remember me
                                 </label>
                             </div>
-                            <a href="#!" class="text-light">Forgot password?</a>
+                            <a class="text-light" asp-controller="Home" asp-action="ForgotPassword">Forgot password?</a>
                         </div>
 
                         <div class="text-center text-lg-start mt-4 pt-2">

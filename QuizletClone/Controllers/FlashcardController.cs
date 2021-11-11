@@ -128,6 +128,9 @@ namespace QuizletClone.Controllers
         [Route("Flashcard/Test/{id:int}")]
         public ActionResult Test(int id)
         {
+            ViewBag.getID = id;
+            var a = (from s in _context.SetStudies where s.Id == id select s.Title).FirstOrDefault();
+            ViewBag.Title = a;
             if (TempData.Peek("username") == null)
             {
                 return RedirectToAction("Login", "Home");
@@ -138,6 +141,8 @@ namespace QuizletClone.Controllers
         [Route("Flashcard/Room/{id:int}")]
         public ActionResult Room(int id)
         {
+            var a = (from s in _context.SetStudies where s.Id == id select s.Title).FirstOrDefault();
+            ViewBag.Title = a;
             TempData["getID"] = id;
             var myQuiz = (from s in _context.SetStudyQuizzes
                           join q in _context.Quizzes on s.QuizId equals q.Id
