@@ -334,36 +334,80 @@ namespace QuizletClone.Controllers
         [HttpPost]
         public IActionResult ForgotPassword(string email)
         {
+            bool flag = true;
+            try
+            {
+                var validEmail = (from e in _context.Users where e.Email == email select e).Single();
+                TempData["getResetInfo"]= validEmail.Id;
+            }
+            catch
+            {
+                flag = false;
+            }
+            if (flag)
+            {
+                //Email & Content
+                string toemail = Convert.ToString(email);
+                MailMessage message = new MailMessage(new MailAddress(fromemail, mailtitle), new MailAddress(toemail));
+                message.Subject = subject;
+                message.Body = MailBody;
+                message.IsBodyHtml = true;
 
-            //Email & Content
-            string toemail = Convert.ToString(email);
-            MailMessage message = new MailMessage(new MailAddress(fromemail,mailtitle),new MailAddress(toemail));
-            message.Subject = subject;
-            message.Body = MailBody;
-            message.IsBodyHtml = true;
+                //Server Detail
+                SmtpClient smtp = new SmtpClient();
+                //gmail ports = 465(SSL) ir 587(TSL)
+                smtp.Host = "smtp.gmail.com";
+                smtp.Port = 587;
+                smtp.EnableSsl = true;
+                smtp.DeliveryMethod = SmtpDeliveryMethod.Network;
+
+                //Credentials
+                System.Net.NetworkCredential credential = new System.Net.NetworkCredential();
+                credential.UserName = fromemail;
+                credential.Password = fromemailpw;
+                smtp.UseDefaultCredentials = false;
+                smtp.Credentials = credential;
+
+                smtp.Send(message);
+
+                ViewBag.EmailSendMessage = "Email sent successfully!! Please check your email";
+            }
+            else
+            {
+                ViewBag.Err = "Email is not exist! Please try again!!";
+            }
            
-            //Server Detail
-            SmtpClient smtp = new SmtpClient();
-            //gmail ports = 465(SSL) ir 587(TSL)
-            smtp.Host = "smtp.gmail.com";
-            smtp.Port = 587;
-            smtp.EnableSsl = true;
-            smtp.DeliveryMethod = SmtpDeliveryMethod.Network;
-
-            //Credentials
-            System.Net.NetworkCredential credential = new System.Net.NetworkCredential();
-            credential.UserName = fromemail;
-            credential.Password = fromemailpw;
-            smtp.UseDefaultCredentials = false;
-            smtp.Credentials = credential;
-
-            smtp.Send(message);
-
-            ViewBag.EmailSendMessage = "Email sent successfully!! Please check your email";
             return View();
         }
         public IActionResult Reset_Password()
         {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult Reset_Password(string resetpass, string confirm)
+        {
+            try
+            {
+                if (resetpass.Equals(confirm))
+                {
+                    int resetID = (int)TempData["getResetInfo"];
+                    var resetUser = _context.Users.FirstOrDefault(x => x.Id == resetID);
+                    resetUser.Password = confirm;
+                    _context.SaveChanges();
+                    ViewBag.Status = "Your Password has changed successfully!";
+                }
+                else
+                {
+                    ViewBag.Err = "New password and confirm password is not match!Please enter again";
+                }
+            }
+            catch (Exception)
+            {
+
+                ViewBag.Exception = "Hmm Seems like you haven't authorize your email for reset password yet!! Go ";
+            }
+           
             return View();
         }
     }
