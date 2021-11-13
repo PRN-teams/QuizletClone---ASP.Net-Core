@@ -108,15 +108,17 @@ namespace QuizletClone.Controllers
 
                 TempData.Clear();
             }
+            //Get related user
+            var relatedUser = (from u in _context.Users where u.Username.ToLower().Contains(search.ToLower()) select u).ToList();
             var TotalsetbyUser = (from s in _context.SetStudies group s by s.UserId into setgroup select new { uID = setgroup.Key, Count = setgroup.Count() }).ToList();
-            var getu = (from r in result join t in TotalsetbyUser on r.uID equals t.uID select new { uId = r.uID, uName = r.uName,
-                        uAva = r.uAvar, totalSet = t.Count}).ToList();
             Dictionary<User, int> UserRelated = new Dictionary<User, int>();
-            foreach (var item in getu.Distinct())
+            var test = TotalsetbyUser.Any(cus => cus.uID == 1);
+            foreach (var item in relatedUser)
             {
-                UserRelated.Add(new Models.User { AvatarUrl = item.uAva, Id = item.uId, Username = item.uName }, item.totalSet);
+                UserRelated.Add(new Models.User { AvatarUrl = item.AvatarUrl, Id = item.Id, Username = item.Username },
+                                TotalsetbyUser.Any(cus => cus.uID == item.Id)? TotalsetbyUser.Where(x=>x.uID == item.Id).Select(x=>x.Count).FirstOrDefault() :0);
             }
-            ViewBag.UserRelated = (from u in UserRelated where u.Key.Username.ToLower().Contains(search.ToLower()) select u).ToList();
+            ViewBag.UserRelated = UserRelated;
             return View();
         }
 
@@ -162,6 +164,14 @@ namespace QuizletClone.Controllers
                 return RedirectToAction("Login", "Home");
             }
             
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult CreateQuiz()
+        {
+           
+
             return View();
         }
 
@@ -243,6 +253,43 @@ namespace QuizletClone.Controllers
             }
             return View();
         }
+
+        [HttpPost]
+        public IActionResult Register(User user)
+        {
+            if (user.AvatarUrl == null)
+            {
+                user.AvatarUrl = "https://avatars.dicebear.com/api/open-peeps/your-custom-seed.svg";
+            }
+           
+            if (DateTime.Now.Year-user.Dob.Year<=13)
+            {
+                ViewBag.ValidYear = " Your age is not enough to Register, please check again! You should be older than 13 at least!";
+                return View();
+            }
+            try
+            {
+                var a = (from u in _context.Users where u.Email == user.Email select u).Single();
+                ViewBag.Err = "Email is already exist, please choose another email!";
+            }
+            catch (Exception)
+            {
+                try
+                {
+                    _context.Add(user);
+                    _context.SaveChanges();
+                    ViewBag.Success = "Register successfully!! Goes";
+                }
+                catch (Exception)
+                {
+                    ViewBag.Err = "Username is already exist, please choose another name!";
+                }
+            }
+            return View();
+           
+        }
+
+
         public IActionResult Logout()
         {
             HttpContext.Session.Clear();

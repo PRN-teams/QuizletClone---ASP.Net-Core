@@ -5,6 +5,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Bootstrap.v3.Datetimepicker" Version="4.17.49" />
+    <PackageReference Include="Bootstrap.v3.Datetimepicker.CSS" Version="4.17.49" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Facebook" Version="3.1.21" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="3.1.21" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Twitter" Version="3.1.20" />
