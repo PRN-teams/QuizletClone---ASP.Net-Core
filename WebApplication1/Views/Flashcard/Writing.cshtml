@@ -1,0 +1,170 @@
+﻿@{ViewData["Title"] = $"Writting: {@ViewBag.Title}"; }
+<style>
+    #form12 {
+        border-top: none;
+        border-bottom: 2px solid white;
+        border-left: none;
+        border-radius: 0;
+        border-right: none;
+        width: 40rem;
+    }
+
+    input:focus {
+        outline: none;
+    }
+</style>
+@section Scripts {
+    <script>
+        //On event - check input & result
+        const OnEvent = (doc) => {
+            return {
+                on: (event, selector, callback) => {
+                    doc.addEventListener('click', (event) => {
+                        if (!event.target.matches(selector)) return;
+                        callback.call(event.target, event);
+                    }, false);
+                }
+            }
+        };
+        var input_val;
+        var result_val;
+        var getquizleft = @ViewBag.getQuiz.Count;
+        var incorrect = 0;
+        var correct = 0;
+        //Progress bar on change
+        OnEvent(document).on('click', '.btn-warning', function (e) {
+            $('.carousel-inner div.active').find('#form12').each(function () {
+                input_val = $(this).val();
+            })
+            $('.carousel-inner div.active').find('#custId').each(function () {
+                result_val = $(this).val();
+            })
+            //True
+            if (input_val.toLowerCase().localeCompare(result_val.toLowerCase()) == 0) {
+                $("#form12").css("border-bottom", "3px solid green");
+                $("#myCarousel").carousel("next");
+                correct++;
+                document.getElementById("correctTerm").innerHTML = correct;
+            }
+            //Fasle
+            else {
+                $("#form12").css("border-bottom", "3px solid red");
+                $(".alert").css("visibility", "visible");
+                $(".btn-info").css("visibility", "visible");
+                incorrect++;
+                document.getElementById("incorrectTerm").innerHTML = incorrect;
+                $("#myCarousel").carousel("pause");
+            }
+            console.log(input_val + " , " + result_val);
+            $(".incorrect").css({ "width": (incorrect * 100) / (100 *@ViewBag.getQuiz.Count) * 100 + "%" });
+            $(".correct").css({ "width": (correct * 100) / (100 *@ViewBag.getQuiz.Count) * 100 + "%" });
+        });
+
+        $("#myCarousel").on('slide.bs.carousel', function (event) {
+            getquizleft = getquizleft - 1;
+            document.getElementById("totalleft").innerHTML = getquizleft;
+            $(".alert").css("visibility", "hidden");
+            $(".getnext_ca").css("visibility", "hidden");
+            $(".totalleft").css({ "width": (getquizleft * 100) / (100 *@ViewBag.getQuiz.Count) * 100 + "%" });
+             console.log(event.from +" "+@ViewBag.getQuiz.Count );
+            if (event.from >= @ViewBag.getQuiz.Count-1 && incorrect === 0) {
+                window.location.href = '@Url.Action("Congrats")';
+            }
+            if (event.from >= @ViewBag.getQuiz.Count-1 && incorrect !== 0) {
+                window.location.href = '@Url.Action("Continue")';
+            }
+        });
+    $(".getnext_ca").click(function () {
+        $("#myCarousel").carousel("next");
+    });
+    $(document).ready(function () {
+        $("#myCarousel").carousel("pause");
+    })
+    $(".btn-info").click(function () {
+        $("#myCarousel").carousel("next");
+    });
+
+
+    </script>
+}
+<div class="container">
+    <div class="row" style="height:100vh;">
+        <div class="col-md-3 pt-5 px-5 text-light d-flex flex-column bg-dark">
+            <a class="h5 font-weight-bold text-light text-decoration-none" asp-controller="Flashcard" asp-action="Index" asp-route-id="@ViewBag.getID"><i class="fas fa-chevron-left"></i> Return</a>
+            <h5 class="my-5 font-weight-bold"> <img src="~/img/writing.png" style="width:40px;height:40px" class="mx-3" />Writting</h5>
+            <!-- Progress-->
+            <div class="progress">
+                <div class="progress-bar bg-warning totalleft" style="width:100%" role="progressbar"  aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+            </div>
+
+            <div style="display: flex; justify-content: space-between;">
+                <h6 class="my-2">Term left</h6>
+                <h6 class="my-2 totalquiz" id="totalleft">@ViewBag.getQuiz.Count</h6>
+            </div>
+            <!-- Progress-->
+            <div class="progress mt-3">
+                <div class="progress-bar bg-danger incorrect" role="progressbar"  aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+            </div>
+
+            <div style="display: flex; justify-content: space-between;">
+                <h6 class="my-2">Incorrect</h6>
+                <h6 class="my-2 totalquiz" id="incorrectTerm">0</h6>
+            </div>
+
+            <!-- Progress-->
+            <div class="progress mt-3">
+                <div class="progress-bar bg-success correct" role="progressbar" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+            </div>
+
+            <div style="display: flex; justify-content: space-between;">
+                <h6 class="my-2">Correct</h6>
+                <h6 class="my-2" id="correctTerm">0</h6>
+            </div>
+        </div>
+
+        <div class="col-md-9">
+            <div id="myCarousel" class="carousel slide">
+                <!-- Wrapper for slides -->
+                <div class="carousel-inner">
+                    <div class="carousel-item active pt-5" style="justify-content:center">
+                        <div class="card text-white bg-secondary mb-3" style="width: 50rem">
+                            <div class="card-header py-4 h5" style="width:50rem">@ViewBag.getFirst.Definition</div>
+                            <div class="card-body d-flex align-items-center justify-content-around">
+                                <input type="text" id="form12" class="mt-3 bg-secondary text-light h5" />
+                                <input type="hidden" id="custId" name="custId" value="@ViewBag.getFirst.Term">
+                                <button type="button" id="0" class="btn btn-warning">Check</button>
+                            </div>
+                            <div class="alert alert-success" role="alert" style="visibility:hidden">
+                                <h5>Correct Answer is:</h5>
+                                <h6>@ViewBag.getFirst.Term</h6>
+                            </div>
+                        </div>
+                    </div>
+                    @for (int i = 1; i < ViewBag.getQuiz.Count; i++)
+                    {
+                        <div class="carousel-item pt-5" style="justify-content:center">
+                            <div class="card text-white bg-secondary mb-3" style="width: 50rem">
+                                <div class="card-header py-4 h5" style="width:50rem">@ViewBag.getQuiz[i].Definition</div>
+                                <div class="card-body d-flex align-items-center justify-content-around">
+                                    <input type="text" id="form12" class="mt-3 bg-secondary text-light h5" />
+                                    <input type="hidden" id="custId" name="custId" value="@ViewBag.getQuiz[i].Term">
+                                    <button type="button" class="btn btn-warning">Check</button>
+                                </div>
+                                <div class="alert alert-success" role="alert" style="visibility:hidden">
+                                   <h5>Correct Answer is:</h5>
+                                   <h6>@ViewBag.getQuiz[i].Term</h6>
+                                </div>
+                            </div>
+                        </div>
+                    }
+
+
+                </div>
+
+            </div>
+            <button type="button" class="btn btn-info btn-lg getnext_ca" style="margin-left:40%;visibility:hidden" >Click to continue</button>
+        </div>
+
+    </div>
+</div>
+
