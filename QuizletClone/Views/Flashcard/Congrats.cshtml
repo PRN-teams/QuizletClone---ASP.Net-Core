@@ -1,7 +1,0 @@
-﻿@{ ViewData["Title"] = "Congrats";
-}
-<div class="container bg-dark mt-4 pt-4" style="width: 100%; height: 80vh; display: flex;flex-direction:column; align-items: center; justify-content: center">
-    <img src="~/img/congratulation.png" style="width:30%;height:55%;" />
-    <h3 class="text-light">Congratulation you have finish learning!!</h3>
-    <a role="button" class="btn btn-warning btn-lg"  asp-controller="Flashcard" asp-action="Index" asp-route-id="@TempData.Peek("getID")">Return</a>
-</div>
