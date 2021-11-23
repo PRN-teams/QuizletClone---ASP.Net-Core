@@ -18,8 +18,8 @@
                             <h6 class="card-subtitle mt-2 text-muted">@item2.Value terms</h6>
                         }
                     }
-                    <span style="display: flex; align-items: center;" class="mt-4 mb-3">
-                        <img src="@item.Key.AvatarUrl" style="width:20%;height:20%" />
+                    <span style="display: flex; align-items: center;" class="mt-4">
+                        <img src="@item.Key.AvatarUrl" style="width: 15%; height: 15%; border-radius: 50%;" />
                         <a class="card-subtitle text-decoration-none h5 text-light" asp-controller="Flashcard" asp-action="Users" asp-route-id="@item.Key.Id">@item.Key.Username</a>
                     </span>
 
@@ -42,8 +42,8 @@
                         <h6 class="card-subtitle mt-2 text-muted">@item2.Value terms</h6>
                     }
                 }
-                <span style="display: flex; align-items: center;" class="mt-4 mb-3">
-                    <img src="@item.Key.AvatarUrl" style="width:20%;height:20%" />
+                <span style="display: flex; align-items: center;" class="mt-4">
+                    <img src="@item.Key.AvatarUrl" style="width: 15%; height: 15%; border-radius: 50%;" />
                     <a class="card-subtitle text-decoration-none h5 text-light" asp-controller="Flashcard" asp-action="Users" asp-route-id="@item.Key.Id">@item.Key.Username</a>
                 </span>
 

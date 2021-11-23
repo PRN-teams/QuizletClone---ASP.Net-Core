@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Cryptography.KeyDerivation;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
@@ -7,6 +8,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Net.Mail;
+using System.Security.Cryptography;
 using System.Threading.Tasks;
 using WebApplication1.Models;
 
@@ -278,6 +280,22 @@ namespace WebApplication1.Controllers
             {
                 try
                 {
+                    //Ma hoa mat khau trc khi bo vao database
+        // generate a 128-bit salt using a cryptographically strong random sequence of nonzero values
+                    byte[] salt = new byte[128 / 8];
+                    using (var rngCsp = new RNGCryptoServiceProvider())
+                    {
+                        rngCsp.GetNonZeroBytes(salt);
+                    }
+                    // derive a 256-bit subkey (use HMACSHA256 with 100,000 iterations)
+                    string hashed = Convert.ToBase64String(KeyDerivation.Pbkdf2(
+                        password: user.Password,
+                        salt: salt,
+                        prf: KeyDerivationPrf.HMACSHA256,
+                        iterationCount: 100000,
+                        numBytesRequested: 256 / 8));
+                    user.Password = hashed;
+                    //End encryption
                     _context.Add(user);
                     _context.SaveChanges();
                     ViewBag.Success = "Register successfully!! Goes";
