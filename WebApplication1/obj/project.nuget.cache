@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "K9eCHXoThzMtFMnzkgd9ZYEm4+KCeEA5yL/HVDbpkZK/Wo0Gvq6odtUydDFPMCxkYcL1SLz2kVy4mVZBxr7xgw==",
+  "dgSpecHash": "Yx7zemIiGkQI/m00dkNRkny67z/oCF34BpomnVM3mkOIo4aYki8m3bJf3y8gh5qLiz7UWGPdSpD4lzfDJOQ69A==",
   "success": true,
-  "projectFilePath": "C:\\Users\\Macbook Pro\\source\\repos\\WebApplication1\\WebApplication1.csproj",
+  "projectFilePath": "C:\\Users\\Macbook Pro\\Source\\Repos\\QuizletClone---ASP.Net-Core\\WebApplication1\\WebApplication1.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Macbook Pro\\.nuget\\packages\\microsoft.aspnetcore.authentication.facebook\\3.1.21\\microsoft.aspnetcore.authentication.facebook.3.1.21.nupkg.sha512",
     "C:\\Users\\Macbook Pro\\.nuget\\packages\\microsoft.aspnetcore.authentication.google\\3.1.21\\microsoft.aspnetcore.authentication.google.3.1.21.nupkg.sha512",

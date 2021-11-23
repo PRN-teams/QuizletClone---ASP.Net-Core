@@ -36,9 +36,13 @@
 
         <div class="mt-3">
             <div>
-                @Html.TextBoxFor(model => model.Title, new { @required = "required", @type = "text", @id = "form12", @class = "mt-3 text-info h5", @placeholder = "Nhập tiêu đề, ví dụ 'Sinh học - Chương 22: Tiến hóa'" })
+                @Html.TextBoxFor(model => model.Title, new { @required = "required", @type = "text", @id = "form12", @class = "mt-3 text-info h5 text-uppercase", @placeholder = "Nhập tiêu đề, ví dụ 'Sinh học - Chương 22: Tiến hóa'" })
                 <br />
                 <label class="text-light">Title</label>
+                <br />
+                @Html.TextBoxFor(model => model.Description, new { @required = "required", @type = "text", @id = "form12", @class = "mt-3 text-info h5", @placeholder = "Thêm mô tả..." })
+                <br />
+                <label class="text-light">Description</label>
             </div>
         </div>
 

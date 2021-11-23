@@ -181,6 +181,8 @@ namespace WebApplication1.Models
                     .HasColumnType("datetime")
                     .HasDefaultValueSql("(getdate())");
 
+                entity.Property(e => e.Description).HasColumnType("text");
+
                 entity.Property(e => e.Title)
                     .IsRequired()
                     .HasColumnName("title");
