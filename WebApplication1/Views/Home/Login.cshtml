@@ -41,6 +41,10 @@
                     <form>
                         <div class="d-flex flex-row align-items-center justify-content-center justify-content-lg-start">
                             <p class="lead fw-normal mb-0 me-3">Sign in with</p>
+                            <a asp-action="GoogleAuth" asp-controller="Home" type="button" class="btn btn-danger btn-floating mx-1">
+                                <i class="fab fa-google"></i>
+                            </a>
+
                             <button type="button" class="btn btn-primary btn-floating mx-1">
                                 <i class="fab fa-facebook-f"></i>
                             </button>
@@ -48,10 +52,6 @@
                             <button type="button" class="btn btn-outline-info btn-floating mx-1">
                                 <i class="fab fa-twitter"></i>
                             </button>
-
-                            <a asp-action="GoogleAuth" asp-controller="Home" type="button" class="btn btn-danger btn-floating mx-1">
-                                <i class="fab fa-google"></i>
-                            </a>
                         </div>
 
                         <div class="divider d-flex align-items-center my-4">

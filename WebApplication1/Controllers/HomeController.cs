@@ -256,20 +256,20 @@ namespace WebApplication1.Controllers
         [GoogleScopedAuthorize(PeopleServiceService.ScopeConstants.UserinfoProfile)]
         public async Task<IActionResult> GoogleAuth([FromServices] IGoogleAuthProvider auth)
         {
-            
+            var cred = await auth.GetCredentialAsync();
+            var service = new PeopleServiceService(new BaseClientService.Initializer()
+            {
+                HttpClientInitializer = cred
+            });
+
+
+            var request = service.People.Get("people/me");
+            request.PersonFields = "emailAddresses";
+            var person = await request.ExecuteAsync();
+            var info = person.EmailAddresses.FirstOrDefault()?.Value;
             try
             {
-                var cred = await auth.GetCredentialAsync();
-                var service = new PeopleServiceService(new BaseClientService.Initializer()
-                {
-                    HttpClientInitializer = cred
-                });
-
-
-                var request = service.People.Get("people/me");
-                request.PersonFields = "emailAddresses";
-                var person = await request.ExecuteAsync();
-                var info = person.EmailAddresses.FirstOrDefault()?.Value;
+               
                 var listUser = (from u in _context.User where u.Email == info select u).SingleOrDefault();
                 HttpContext.Session.SetString("SessionuName", listUser.Username);
                 HttpContext.Session.SetInt32("SessionuID", listUser.Id);
@@ -283,6 +283,10 @@ namespace WebApplication1.Controllers
             }
             catch (Exception)
             {
+                foreach (var cookie in HttpContext.Request.Cookies)
+                {
+                    Response.Cookies.Delete(cookie.Key);
+                }
                 ViewBag.Err = true;
                 return View("Login");
             }
@@ -354,6 +358,10 @@ namespace WebApplication1.Controllers
         {
             HttpContext.Session.Clear();
             TempData.Clear();
+            foreach (var cookie in HttpContext.Request.Cookies)
+            {
+                Response.Cookies.Delete(cookie.Key);
+            }
             return RedirectToAction("Index", "Home");
         }
 

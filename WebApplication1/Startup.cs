@@ -1,5 +1,6 @@
 using Google.Apis.Auth.AspNetCore3;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -60,7 +61,6 @@ namespace WebApplication1
                       options.ClientId = googleAuthNSection["ClientId"];
                       options.ClientSecret = googleAuthNSection["ClientSecret"];
                   });
-
             //End Google Config
 
             //Session Config
