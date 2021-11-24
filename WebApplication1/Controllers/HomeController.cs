@@ -292,6 +292,27 @@ namespace WebApplication1.Controllers
             }
         }
 
+        //Google Oauth Part -- Register
+        [GoogleScopedAuthorize(PeopleServiceService.ScopeConstants.UserinfoProfile)]
+        public async Task<IActionResult> GoogleRegister([FromServices] IGoogleAuthProvider auth)
+        {
+            var cred = await auth.GetCredentialAsync();
+            var service = new PeopleServiceService(new BaseClientService.Initializer()
+            {
+                HttpClientInitializer = cred
+            });
+
+            var request = service.People.Get("people/me");
+            request.PersonFields = "emailAddresses,photos,names,birthdays";
+            var person = await request.ExecuteAsync();
+            User user = new User();
+            user.Email = person.EmailAddresses.FirstOrDefault()?.Value;
+            user.AvatarUrl = person.Photos.FirstOrDefault().Url;
+            user.Username = person.Names.FirstOrDefault().DisplayName;
+            
+            return RedirectToAction("Index", "Home");
+        }
+
         public IActionResult Register()
         {
 

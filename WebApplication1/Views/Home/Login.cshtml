@@ -20,7 +20,7 @@
     }
 </style>
 
-<section class="vh-100 mt-5 ">
+<section class="vh-100 mt-5 " >
     @if ((ViewBag.Err) == true)
     {
         <div class="alert alert-danger" role="alert">
@@ -40,7 +40,7 @@
                     @Html.AntiForgeryToken()
                     <form>
                         <div class="d-flex flex-row align-items-center justify-content-center justify-content-lg-start">
-                            <p class="lead fw-normal mb-0 me-3">Sign in with</p>
+                            <p class="lead fw-normal mb-0 me-3 mr-3">Sign in with</p>
                             <a asp-action="GoogleAuth" asp-controller="Home" type="button" class="btn btn-danger btn-floating mx-1">
                                 <i class="fab fa-google"></i>
                             </a>
@@ -49,7 +49,7 @@
                                 <i class="fab fa-facebook-f"></i>
                             </button>
 
-                            <button type="button" class="btn btn-outline-info btn-floating mx-1">
+                            <button type="button" class="btn btn-info btn-floating mx-1">
                                 <i class="fab fa-twitter"></i>
                             </button>
                         </div>
