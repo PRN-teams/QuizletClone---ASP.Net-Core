@@ -1,4 +1,8 @@
-﻿using Microsoft.AspNetCore.Cryptography.KeyDerivation;
+﻿using Google.Apis.Auth.AspNetCore3;
+using Google.Apis.PeopleService.v1;
+using Google.Apis.Services;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -246,6 +250,42 @@ namespace WebApplication1.Controllers
                     return View();
                 }
             
+        }
+
+        //Google Oauth Part -- Login
+        [GoogleScopedAuthorize(PeopleServiceService.ScopeConstants.UserinfoProfile)]
+        public async Task<IActionResult> GoogleAuth([FromServices] IGoogleAuthProvider auth)
+        {
+            
+            try
+            {
+                var cred = await auth.GetCredentialAsync();
+                var service = new PeopleServiceService(new BaseClientService.Initializer()
+                {
+                    HttpClientInitializer = cred
+                });
+
+
+                var request = service.People.Get("people/me");
+                request.PersonFields = "emailAddresses";
+                var person = await request.ExecuteAsync();
+                var info = person.EmailAddresses.FirstOrDefault()?.Value;
+                var listUser = (from u in _context.User where u.Email == info select u).SingleOrDefault();
+                HttpContext.Session.SetString("SessionuName", listUser.Username);
+                HttpContext.Session.SetInt32("SessionuID", listUser.Id);
+                HttpContext.Session.SetString("SessionuAva", listUser.AvatarUrl);
+                HttpContext.Session.SetString("SessionuEmail", listUser.Email);
+                HttpContext.Session.SetString("SessionuDOB", (listUser.Dob).ToString());
+                TempData["uid"] = HttpContext.Session.GetInt32("SessionuID");
+                TempData["username"] = HttpContext.Session.GetString("SessionuName");
+                TempData["userAva"] = HttpContext.Session.GetString("SessionuAva");
+                return RedirectToAction("Index", "Home");
+            }
+            catch (Exception)
+            {
+                ViewBag.Err = true;
+                return View("Login");
+            }
         }
 
         public IActionResult Register()

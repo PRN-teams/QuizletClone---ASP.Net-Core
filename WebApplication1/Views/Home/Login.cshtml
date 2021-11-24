@@ -35,7 +35,6 @@
                      alt="Sample image">
             </div>
             <div class="col-md-8 col-lg-6 col-xl-4 offset-xl-1">
-
                 @using (Html.BeginForm("Login", "Home", FormMethod.Post))
                 {
                     @Html.AntiForgeryToken()
@@ -46,19 +45,19 @@
                                 <i class="fab fa-facebook-f"></i>
                             </button>
 
-                            <button type="button" class="btn btn-primary btn-floating mx-1">
+                            <button type="button" class="btn btn-outline-info btn-floating mx-1">
                                 <i class="fab fa-twitter"></i>
                             </button>
 
-                            <button type="button" class="btn btn-primary btn-floating mx-1">
-                                <a asp-controller="Home" asp-action="GoogleLogin"><i class="fab fa-google"></i></a>
-                            </button>
+                            <a asp-action="GoogleAuth" asp-controller="Home" type="button" class="btn btn-danger btn-floating mx-1">
+                                <i class="fab fa-google"></i>
+                            </a>
                         </div>
 
                         <div class="divider d-flex align-items-center my-4">
                             <p class="text-center fw-bold mx-3 mb-0">Or</p>
                         </div>
-                         
+
                         <!-- Username input -->
                         <div class="form-outline mb-4">
                             @Html.TextBoxFor(model => model.Email, new { @class = "form-control form-control-lg", @placeholder = "Enter a valid email", @type = "email", required = "required" })
