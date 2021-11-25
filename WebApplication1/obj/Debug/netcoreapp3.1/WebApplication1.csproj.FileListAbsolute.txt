@@ -231,3 +231,4 @@ C:\Users\Macbook Pro\Source\Repos\QuizletClone---ASP.Net-Core\WebApplication1\bi
 C:\Users\Macbook Pro\Source\Repos\QuizletClone---ASP.Net-Core\WebApplication1\bin\Debug\netcoreapp3.1\Google.Apis.Auth.AspNetCore3.dll
 C:\Users\Macbook Pro\Source\Repos\QuizletClone---ASP.Net-Core\WebApplication1\bin\Debug\netcoreapp3.1\Google.Apis.Core.dll
 C:\Users\Macbook Pro\Source\Repos\QuizletClone---ASP.Net-Core\WebApplication1\bin\Debug\netcoreapp3.1\Google.Apis.PeopleService.v1.dll
+C:\Users\Macbook Pro\Source\Repos\QuizletClone---ASP.Net-Core\WebApplication1\obj\Debug\netcoreapp3.1\Razor\Views\Home\TwoFactor.cshtml.g.cs

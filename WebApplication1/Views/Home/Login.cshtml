@@ -2,100 +2,88 @@
 @{
     ViewData["Title"] = "Login";
 }
-<style>
-    .divider:after,
-    .divider:before {
-        content: "";
-        flex: 1;
-        height: 1px;
-        background: #eee;
-    }
 
-    .h-custom {
-        height: calc(100% - 73px);
-    }
+    <style>
+        .card-registration .select-input.form-control[readonly]:not([disabled]) {
+            font-size: 1rem;
+            line-height: 2.15;
+            padding-left: .75em;
+            padding-right: .75em;
+        }
 
-    * {
-        color: white;
-    }
-</style>
+        .card-registration .select-arrow {
+            top: 13px;
+        }
 
-<section class="vh-100 mt-5 " >
-    @if ((ViewBag.Err) == true)
-    {
-        <div class="alert alert-danger" role="alert">
-            Wrong email or password!!
-        </div>
-    }
-
-    <div class="container-fluid h-custom">
-        <div class="row d-flex justify-content-center align-items-center h-100">
-            <div class="col-md-9 col-lg-6 col-xl-5">
-                <img src="https://mdbootstrap.com/img/Photos/new-templates/bootstrap-login-form/draw2.png" class="img-fluid"
-                     alt="Sample image">
-            </div>
-            <div class="col-md-8 col-lg-6 col-xl-4 offset-xl-1">
-                @using (Html.BeginForm("Login", "Home", FormMethod.Post))
-                {
-                    @Html.AntiForgeryToken()
-                    <form>
-                        <div class="d-flex flex-row align-items-center justify-content-center justify-content-lg-start">
-                            <p class="lead fw-normal mb-0 me-3 mr-3">Sign in with</p>
-                            <a asp-action="GoogleAuth" asp-controller="Home" type="button" class="btn btn-danger btn-floating mx-1">
-                                <i class="fab fa-google"></i>
-                            </a>
-
-                            <button type="button" class="btn btn-primary btn-floating mx-1">
-                                <i class="fab fa-facebook-f"></i>
-                            </button>
-
-                            <button type="button" class="btn btn-info btn-floating mx-1">
-                                <i class="fab fa-twitter"></i>
-                            </button>
-                        </div>
-
-                        <div class="divider d-flex align-items-center my-4">
-                            <p class="text-center fw-bold mx-3 mb-0">Or</p>
-                        </div>
-
-                        <!-- Username input -->
-                        <div class="form-outline mb-4">
-                            @Html.TextBoxFor(model => model.Email, new { @class = "form-control form-control-lg", @placeholder = "Enter a valid email", @type = "email", required = "required" })
-                            <label class="form-label" for="form3Example3">Email</label>
-                        </div>
-
-                        <!-- Password input -->
-                        <div class="form-outline mb-3">
-                            @Html.TextBoxFor(model => model.Password, new { @class = "form-control form-control-lg", @placeholder = "Enter a valid password", @type = "password", required = "required" })
-
-                            <label class="form-label" for="form3Example4">Password</label>
-                        </div>
-
-                        <div class="d-flex justify-content-between align-items-center">
-                            <!-- Checkbox -->
-                            <div class="form-check mb-0">
-                                <input class="form-check-input me-2" type="checkbox" value="" id="form2Example3" />
-                                <label class="form-check-label" for="form2Example3">
-                                    Remember me
-                                </label>
+        .myform::-webkit-scrollbar {
+            display: none;
+        }
+    </style>
+    
+    <section class="h-80" style="margin:-7% 0">
+        <div class="container py-5 h-100">
+            <div class="row d-flex justify-content-center align-items-center h-100">
+                <div class="col">
+                    <div class="card card-registration my-4">
+                        <div class="row g-0">
+                            <div class="col-xl-6 d-none d-xl-block">
+                                <img src="https://mdbootstrap.com/img/Photos/new-templates/bootstrap-registration/img4.jpg"
+                                     alt="Sample photo"
+                                     class="img-fluid"
+                                     style="border-top-left-radius: .25rem; border-bottom-left-radius: .25rem;" />
                             </div>
-                            <a class="text-light" asp-controller="Home" asp-action="ForgotPassword">Forgot password?</a>
+                            <div class="col-xl-6 myform" style="height:800px;">
+                                <div class="card-body p-md-5 text-black">
+                                    <div style="display:flex;justify-content:space-around">
+                                        <a class="text-uppercase h3 text-decoration-none text-dark" asp-action="Register" asp-controller="Home">SignUp</a>
+                                        <div style="display:flex;flex-direction:column;align-items:center">
+                                            <a class="text-uppercase h3 text-decoration-none " asp-action="Login" asp-controller="Home">SignIn</a>
+                                            <svg style="margin-top:-8%" width="66" height="43" viewBox="0 0 66 43" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M63 3C55.2054 3.19011 47.7219 4.7788 40.1111 6.22222C33.0608 7.55934 25.7652 7.94081 18.7778 9.44444C14.8623 10.287 11.1021 11.3199 7.22222 12.2222C0.125354 13.8727 3.20932 15 8.44444 15C18.8383 15 29.2476 16 39.5556 16C42.9074 16 46.2593 16 49.6111 16C53.0919 16 58.3046 15 51.4444 15C45.2009 15 35.3109 16.0587 30.2222 20.2222C28.3287 21.7715 26.1259 22.4786 24 23.7778C18.7842 26.9652 21.5611 27 25.9444 27C29.6481 27 33.3518 27 37.0556 27C39.5 27 41.9444 27 44.3889 27C48.5176 27 39.4447 29.5872 38.3889 29.8889C35.0961 30.8297 32.7336 32.8175 29.9444 34.4444C27.2196 36.0339 26.5258 38.3162 24 40" stroke="#EBCF3C" stroke-width="5" stroke-linecap="round" />
+                                            </svg>
+                                        </div>
+                                    </div>
+                                    <a asp-action="FacebookRegister" asp-controller="Home" style="width:350px" class="btn btn-outline-primary py-3 mx-4 my-3">
+                                        <i class="fab fa-facebook-f pr-5"></i>
+                                        Continue with Facebook
+                                    </a>
+                                    <a asp-action="GoogleAuth" asp-controller="Home" style="width:350px" class="btn btn-outline-danger py-3  mx-4 mb-3">
+                                        <i class="fab fa-google pr-5"></i>
+                                        Continue with Google
+                                    </a>
+                                    <a asp-action="AppleRegister" asp-controller="Home" style="width:350px" class="btn btn-outline-success py-3  mx-4 mb-3">
+                                        <i class="fab fa-apple pr-5"></i>
+                                        Continue with Apple
+                                    </a>
+                                    @if ((ViewBag.Err) == true)
+                                    {
+                                        <div class="alert alert-danger" role="alert">
+                                            Wrong email or password!!
+                                        </div>
+                                    }
+                                    @using (Html.BeginForm("Login", "Home", FormMethod.Post))
+                                    {
+                                        @Html.AntiForgeryToken()
+                                        <div class="form-outline my-2">
+                                            @Html.TextBoxFor(model => model.Email, new { @class = "form-control form-control-lg", @id = "form3Example8", @placeholder = "Enter a valid email", @type = "email", @required = "required" })
+                                            <label class="form-label" for="form3Example1m">Email</label>
+                                        </div>
+                                        <div class="form-outline my-2">
+                                            @Html.TextBoxFor(model => model.Password, new { @class = "form-control form-control-lg", @id = "form3Example8", @placeholder = "Enter a valid password", @type = "password", required = "required" })
+                                            <label class="form-label" for="form3Example1m">Password</label>
+                                        </div>
+                                        <a asp-controller="Home" asp-action="ForgotPassword">Forgot password?</a>
+
+                                        <div class="d-flex flex-column justify-content-center pt-3 ">
+                                            <button type="submit" class="btn btn-primary btn-lg mb-2 ms-2 py-3 register text-light">SignIn</button>
+                                        </div>
+
+                                    }
+                                </div>
+                            </div>
                         </div>
-
-                        <div class="text-center text-lg-start mt-4 pt-2">
-                            <button type="submit" class="btn btn-primary btn-lg"
-                                    style="padding-left: 2.5rem; padding-right: 2.5rem;">
-                                Login
-                            </button>
-                            <p class="text-light fw-bold mt-2 pt-1 mb-0">
-                                Don't have an account? <a class="link-danger" asp-controller="Home" asp-action="Register">Register</a>
-                            </p>
-                        </div>
-
-                    </form>
-                }
-
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>

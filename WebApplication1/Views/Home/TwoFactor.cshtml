@@ -1,0 +1,105 @@
+﻿@{
+    ViewData["Title"] = "Email Verification";
+}
+<style>
+    #main-site {
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .img-fluid {
+        width: 80%;
+        height: 80%;
+    }
+    .font-roboto {
+        font-family: 'Roboto', sans-serif;
+    }
+
+    .font-poppins {
+        font-family: 'Poppins', sans-serif;
+    }
+
+    .text-white {
+        color: #efefef;
+    }
+
+    .text-light {
+        color: #dee2e6;
+    }
+
+    .link {
+        text-decoration: none;
+        color: #fca311;
+    }
+
+
+    .glass {
+        max-width: 550px;
+        width: 100%;
+        padding: 65px 90px 45px;
+        background: rgba(255, 255, 255, 0.1);
+        box-shadow: 10px 10px 80px rgba(0, 0, 0, 0.3);
+        /* important property */
+        backdrop-filter: blur(5px);
+    }
+
+        .glass .title h1 {
+            font-size: 35px;
+        }
+
+        .glass form .form-control {
+            width: 80px;
+            padding: .3em .1em;
+            font-size: 25px;
+            border-radius: 5px;
+            text-align: center;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .glass form .col .btn {
+            width: 90%;
+            padding: .6em .1em;
+            font-family: 'Poppins', sans-serif;
+            font-size: 20px;
+            background-color: #fca311;
+            color: #efefef;
+            border: none;
+        }
+        input{
+            margin:0 10px;
+        }
+</style>
+<section id="main-site">
+    <div class="glass text-center">
+
+        <!-- title -->
+        <div class="title">
+            <h1 class="font-poppins text-white">Two-Factor Authentication</h1>
+            <img src="~/img/2FA.png" class="img-fluid" alt="">
+
+            <p class="font-poppins text-light">A message with a verifycation code has been sent to your email.Enter the code to continue.</p>
+        </div>
+
+        <!-- form -->
+        <form action="" class="py-2">
+            <h4 class="font-poppins text-light">Enter your OTP Code Here:</h4>
+
+            <div class="col py-1 my-3 d-flex" style="margin-left:-9%">
+                <input type="text" maxlength="1" oninput="this.value = this.value.replace(/[\D]/g, '').replace(/(\..*?)\..*/g, '$1');" autocomplete="off" class="form-control" placeholder="-">
+                <input type="text" maxlength="1" oninput="this.value = this.value.replace(/[\D]/g, '').replace(/(\..*?)\..*/g, '$1');" autocomplete="off" class="form-control" placeholder="-">
+                <input type="text" maxlength="1" oninput="this.value = this.value.replace(/[\D]/g, '').replace(/(\..*?)\..*/g, '$1');" autocomplete="off" class="form-control" placeholder="-">
+                <input type="text" maxlength="1" oninput="this.value = this.value.replace(/[\D]/g, '').replace(/(\..*?)\..*/g, '$1');" autocomplete="off" class="form-control" placeholder="-">
+            </div>
+
+            <div class="col">
+                <button type="submit" class="btn">Verify</button>
+            </div>
+
+            <div class="py-1">
+                <p class="font-poppins text-light">Not received your code? <a href="" class="link">Resend</a></p>
+            </div>
+        </form>
+    </div>
+</section>

@@ -4,189 +4,186 @@
 }
 @section Scripts {
     <script>
-        //Preview Avatar goes here
-        imgInp.onchange = evt => {
-            const [file] = imgInp.files
-            if (file) {
-                blah.src = URL.createObjectURL(file)
-            }
-        }
-
-        //Avatar file goes here
-        const url = "https://api.cloudinary.com/v1_1/djhjuqgne/image/upload/?upload_preset=yfm96suk";
-        const form = document.querySelector("#form");
-
-        form.addEventListener("submit", (e) => {
-            e.preventDefault();
-
-            const files = document.querySelector("[type=file]").files;
-            const formData = new FormData();
-
-            for (let i = 0; i < files.length; i++) {
-                let file = files[i];
-                formData.append("file", file);
-                formData.append("upload_preset", "docs_upload_example_us_preset");
-
-                fetch(url, {
-                    method: "POST",
-                    body: formData
-                })
-                    .then((response) => {
-                        return response.text();
-                    })
-
-                    .then((data) => {
-                        console.log(data)
-                        const object = JSON.parse(data)
-                        document.getElementById("data").value = object.url;
-                    });
-            }
-        });
-
-        //Datetime picker goes here
-        $(function () {
-            $("#datepicker").datepicker();
-        });
-
-        //Password validation
+        let pattern = /^[a-zA-Z0-9!#\$%\^\&*@@\)\(+=._,-]{6,}$/g;
+      //Password validation
         var password = $('.password');
             var confirm = $('.confirmpw');
             var btn = $('.register');
         btn.click(function (e) {
                 if (password.val().localeCompare(confirm.val()) !== 0) {
-                    $(".alert-danger").css("display", "inline-block");
+                    $(".pw-mismatch").css("display", "inline-block");
+                    $(".policy-check").css("display", "none");
+                    $(".password-validate").css("display", "none");
+                e.preventDefault();
+                 } else if (!pattern.test(confirm.val())) {
+                    $(".password-validate").css("display", "inline-block");
+                    $(".policy-check").css("display", "none");
+                    $(".pw-mismatch").css("display", "none");
                     e.preventDefault();
-                } 
+                } else if (!document.getElementById("flexCheckDefault").checked) {
+                    $(".policy-check").css("display", "inline-block");
+                    $(".password-validate").css("display", "none");
+                    $(".pw-mismatch").css("display", "none");
+                    e.preventDefault();
+                }
                 else {
-                    $(".alert-danger").css("display", "none");
+                    $(".policy-check").css("display", "none");
+                    $(".password-validate").css("display", "none");
+                    $(".pw-mismatch").css("display", "none");
                     $(".validate_year").css("display", "none");
                 };
             });
 
     </script>
 }
-<section class="vh-100 " >
-    <div class="container h-100">
-        <div class="row d-flex justify-content-center align-items-center h-100">
-            <div class="col-lg-12 col-xl-11">
-                <div class="card text-black" style="border-radius: 25px;">
-                    <div class="card-body p-md-5">
-                        <div class="row justify-content-center">
-                            <div class="col-md-10 col-lg-6 col-xl-5 order-2 order-lg-1 ">
+<style>
+    .card-registration .select-input.form-control[readonly]:not([disabled]) {
+        font-size: 1rem;
+        line-height: 2.15;
+        padding-left: .75em;
+        padding-right: .75em;
+    }
 
-                                <p class="text-center h1 fw-bold mb-5 mx-1 mx-md-4">Sign up</p>
+    .card-registration .select-arrow {
+        top: 13px;
+    }
+    .myform::-webkit-scrollbar {
+        display: none;
+    }
+</style>
+<section class="h-80" style="margin:-7% 0">
+    <div class="container py-5 h-100">
+        <div class="row d-flex justify-content-center align-items-center h-100">
+            <div class="col">
+                <div class="card card-registration my-4" >
+                    <div class="row g-0">
+                        <div class="col-xl-6 d-none d-xl-block">
+                            <img src="https://mdbootstrap.com/img/Photos/new-templates/bootstrap-registration/img4.jpg"
+                                 alt="Sample photo"
+                                 class="img-fluid"
+                                 style="border-top-left-radius: .25rem; border-bottom-left-radius: .25rem;" />
+                        </div>
+                        <div class="col-xl-6 myform" style="height:800px;overflow-y:overlay">
+                            <div class="card-body p-md-5 text-black">
+                                <div style="display:flex;justify-content:space-around">
+                                    <div style="display:flex;flex-direction:column;align-items:center">
+                                        <a class="text-uppercase h3 text-decoration-none" asp-action="Register" asp-controller="Home">SignUp</a>
+                                        <svg style="margin-top:-8%" width="66" height="43" viewBox="0 0 66 43" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M63 3C55.2054 3.19011 47.7219 4.7788 40.1111 6.22222C33.0608 7.55934 25.7652 7.94081 18.7778 9.44444C14.8623 10.287 11.1021 11.3199 7.22222 12.2222C0.125354 13.8727 3.20932 15 8.44444 15C18.8383 15 29.2476 16 39.5556 16C42.9074 16 46.2593 16 49.6111 16C53.0919 16 58.3046 15 51.4444 15C45.2009 15 35.3109 16.0587 30.2222 20.2222C28.3287 21.7715 26.1259 22.4786 24 23.7778C18.7842 26.9652 21.5611 27 25.9444 27C29.6481 27 33.3518 27 37.0556 27C39.5 27 41.9444 27 44.3889 27C48.5176 27 39.4447 29.5872 38.3889 29.8889C35.0961 30.8297 32.7336 32.8175 29.9444 34.4444C27.2196 36.0339 26.5258 38.3162 24 40" stroke="#EBCF3C" stroke-width="5" stroke-linecap="round" />
+                                        </svg>
+                                    </div>
+                                    <a class="text-uppercase h3 text-decoration-none text-dark" asp-action="Login" asp-controller="Home">SignIn</a>
+                                </div>
+                                <a asp-action="FacebookRegister" asp-controller="Home" style="width:350px" class="btn btn-outline-primary py-2 mx-4 my-3">
+                                    <i class="fab fa-facebook-f pr-5"></i>
+                                    Continue with Facebook
+                                </a>
+                                <a asp-action="GoogleRegister" asp-controller="Home" style="width:350px" class="btn btn-outline-danger py-2  mx-4 mb-3">
+                                    <i class="fab fa-google pr-5"></i>
+                                    Continue with Google
+                                </a>
+                                <a asp-action="AppleRegister" asp-controller="Home" style="width:350px" class="btn btn-outline-success py-2  mx-4 mb-3">
+                                    <i class="fab fa-apple pr-5"></i>
+                                    Continue with Apple
+                                </a>
+                                <div style="display:flex">
+                                    <hr />
+                                    <h4 class="text-secondary">Or</h4>
+                                    <hr />
+                                </div>
                                 @using (Html.BeginForm("Register", "Home", FormMethod.Post))
                                 {
-                                    <div class="row">
-                                        <div class="col-lg-6 col-md-6 col-xs-12 col-sm-6">
-                                        <a href="#" class="btn btn-primary facebook"> 
-                                            <span>Signup with Facebook</span> 
-                                            <i class="fab fa-facebook-f"></i>
-                                            </a> 
-                                        </div>
-                                        <div class="col-lg-6 col-md-6 col-xs-12 col-sm-6">
-                                        <a asp-action="GoogleRegister" asp-controller="Home" class="btn btn-danger google-plus"> Signup with Google 
-                                            <i class="fab fa-google"></i>
-                                            </a> 
+                                    <div class="form-outline mb-4">
+                                        <label class="form-label" for="form3Example1m">Birthdays</label>
+                                        <div class='input-group date' id='datetimepicker1'>
+                                            @Html.TextBoxFor(model => model.Dob, new { @required = "required", @type = "date", @name = "DueDate", @class = "form-control form-control-lg", @id = "form3Example8" })
+                                            <span class="input-group-addon">
+                                                <span class="glyphicon glyphicon-calendar"></span>
+                                            </span>
                                         </div>
                                     </div>
-                                                    <h2 style="text-align:center">or</h2>
-                                                    <form class="mx-1 mx-md-4">
-                                                        <div class="d-flex flex-row align-items-center mb-4">
-                                                            <i class="fas fa-user fa-lg me-3 fa-fw"></i>
-                                                            <div class="form-outline flex-fill mb-0">
-                                                                @Html.TextBoxFor(model => model.Username, new { @required = "required", @type = "text", @id = "form3Example4cd", @class = "form-control", @placeholder = "Your Name" })
-                                                            </div>
-                                                        </div>
+                                    @if (ViewBag.ValidYear != null)
+                                    {
+                                        <div class="alert alert-warning" role="alert">
+                                            @ViewBag.ValidYear
+                                        </div>
+                                    }
+                                    <div class="form-outline mb-4">
+                                        <label class="form-label" for="form3Example1m">User name</label>
+                                        @Html.TextBoxFor(model => model.Username, new { @required = "required", @type = "text", @id = "form3Example8", @class = "form-control form-control-lg", @placeholder = "andrew123" })
+                                    </div>
+                                    @if (ViewBag.Error != null)
+                                    {
+                                        <div class="alert alert-warning" role="alert">
+                                            @ViewBag.Error
+                                        </div>
+                                    }
+                                    <div class="form-outline mb-4">
+                                        <label class="form-label" for="form3Example1m">Email</label>
+                                        @Html.TextBoxFor(model => model.Email, new { @required = "required", @type = "email", @id = "form3Example8", @class = "form-control form-control-lg", @placeholder = "user@abc.com" })
+                                    </div>
+                                    @if (ViewBag.Err != null)
+                                    {
+                                        <div class="alert alert-warning" role="alert">
+                                            @ViewBag.Err
+                                        </div>
+                                    }
+                                    <div class="form-outline mb-4">
+                                        <label class="form-label" for="form3Example1m">Password</label>
+                                        @Html.TextBox("password", null, new { @required = "required", @class = "form-control form-control-lg password", @type = "password", @placeholder = "password", @id = "form3Example8" })
+                                    </div>
+                                    <div class="alert alert-info password-validate" role="alert" style="display:none">
+                                        <ul>
+                                            <li>
+                                                Passwords must have at least 6 character length.
+                                            </li>
+                                            <li>
+                                                Passwords must have at least one non alphanumeric character.
+                                            </li>
+                                            <li>
+                                                Passwords must have at least one lowercase ('a'-'z').
+                                            </li>
+                                            <li>
+                                                Passwords must have at least one uppercase ('A'-'Z').
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div class="form-outline mb-4">
+                                        <label class="form-label" for="form3Example1m">Confirm Password</label>
+                                        @Html.TextBoxFor(model => model.Password, new { @required = "required", @type = "password", @id = "form3Example8", @class = "form-control form-control-lg confirmpw", @placeholder = "repeat your password" })
+                                    </div>
+                                    <div class="alert alert-danger pw-mismatch" role="alert" style="display:none">
+                                        Your password and confirm password are not match!
+                                        Please enter again!!
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                                        <label class="form-check-label" for="flexCheckDefault">
+                                            I agree <a href="#"> Terms of Service</a> and <a href="#">Privacy Policy</a> of QuizletClone
+                                        </label>
+                                    </div>
+                                    <div class="text-danger policy-check my-2" role="alert" style="display:none;border:1px solid red;border-style:dotted">
+                                        PLEASE ACCEPT QUIZLET'S TERMS OF SERVICE AND PRIVACY POLICY TO CONTINUE
+                                    </div>
+                                    <div class="d-flex flex-column justify-content-center pt-3 ">
+                                        <button type="submit" class="btn btn-warning btn-lg mb-2 ms-2 register text-light">SignUp</button>
+                                    </div>
 
-                                                        <div class="d-flex flex-row align-items-center mb-4">
-                                                            <i class="fas fa-envelope fa-lg me-3 fa-fw"></i>
-                                                            <div class="form-outline flex-fill mb-0">
-                                                                @Html.TextBoxFor(model => model.Email, new { @required = "required", @type = "email", @id = "form3Example4cd", @class = "form-control", @placeholder = "Your Email" })
-                                                            </div>
-                                                        </div>
-
-                                                        <div class="d-flex flex-row align-items-center mb-4">
-                                                            <i class="fas fa-lock fa-lg me-3 fa-fw"></i>
-                                                            <div class="form-outline flex-fill mb-0">
-                                                                @Html.TextBox("password", null, new { @required = "required", @class = "form-control password", @type = "password", @placeholder = "Password", @id = "form3Example4c" })
-                                                            </div>
-                                                        </div>
-
-                                                        <div class="d-flex flex-row align-items-center mb-4">
-                                                            <i class="fas fa-key fa-lg me-3 fa-fw"></i>
-                                                            <div class="form-outline flex-fill mb-0">
-                                                                @Html.TextBoxFor(model => model.Password, new { @required = "required", @type = "password", @id = "form3Example4cd", @class = "form-control confirmpw", @placeholder = "Repeat your password" })
-                                                            </div>
-                                                        </div>
-
-                                                        <div class="d-flex flex-row align-items-center mb-4">
-                                                            <i class="fas fa-user-astronaut fa-lg me-3 fa-fw"></i>
-                                                            <div class="form-outline flex-fill mb-0">
-                                                                @Html.TextBoxFor(model => model.AvatarUrl, new { @required = "required", @readonly = "readonly", @type = "text", @id = "data", @class = "form-control text-success", @placeholder = "Avatar Url goes here" })
-                                                            </div>
-                                                        </div>
-
-
-                                                        <div class="d-flex flex-row align-items-center mb-4">
-                                                            <i class="fas fa-birthday-cake fa-lg me-3 fa-fw"></i>
-                                                            <div class='input-group date' id='datetimepicker1'>
-                                                                @Html.TextBoxFor(model => model.Dob, new { @required = "required", @type = "date", @name = "DueDate", @class = "form-control", @id = "datepicker" })
-                                                                <span class="input-group-addon">
-                                                                    <span class="glyphicon glyphicon-calendar"></span>
-                                                                </span>
-                                                            </div>
-                                                        </div>
-                                                        <span >Already have an account? <a asp-controller="Home" asp-action="Login">Log in</a></span>
-                                                        <div class="d-flex justify-content-center mx-4 my-3 mb-lg-4">
-                                                            <button type="submit" class="btn btn-primary btn-lg register">Register</button>
-                                                        </div>
-
-                                                    </form>
-                                                }
-                                <div class="alert alert-danger" role="alert" style="display:none">
-                                    Your password and confirm password are not match!
-                                    Please enter again!!
+                                }
+                                <div class="d-flex flex-column justify-content-center pt-3 ">
+                                    <a class="btn btn-outline-secondary btn-lg mb-2 ms-2" type="button" asp-controller="Home" asp-action="Login">Already have an account? Log in</a>
                                 </div>
-                                @if (ViewBag.ValidYear != null)
-                                {
-                                    <div class="alert alert-warning" role="alert">
-                                        @ViewBag.ValidYear
-                                    </div>
-                                }
-                                @if (ViewBag.Err != null)
-                                {
-                                    <div class="alert alert-warning" role="alert">
-                                        @ViewBag.Err
-                                    </div>
-                                }
-                                @if (ViewBag.Success != null)
-                                {
-                                    <div class="alert alert-success" role="alert">
-                                        @ViewBag.Success @Html.ActionLink("here", "Login", "Home") to join us!!
-                                    </div>
-                                }
+                            </div>
+
 
 
                             </div>
-
-                            <div class="align-content-center justify-content-center col-md-10 col-lg-6 col-xl-7 d-flex align-items-center order-1 order-lg-2 d-flex flex-column">
-                                <h4>Avatar Preview</h4>
-                                <!--Preview img goes here!-->
-                                <img id="blah" class="img-fluid" src="https://avatars.dicebear.com/api/open-peeps/your-custom-seed.svg" alt="Default avatar" style="width:90%;height:70%; border-radius:50%;border:1px solid black" />
-                                <!--End preview-->
-                                <form id="form" method="post" enctype="multipart/form-data">
-                                    <input accept="image/*" type='file' id="imgInp" placeholder="Avatar Upload" />
-                                    <input type="submit" value="Upload Files" name="submit">
-                                </form>
-                            </div>
-                        </div>
+                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
 </section>
+
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.3/jquery.min.js"></script>
-<script src="http://code.jquery.com/ui/1.11.1/jquery-ui.min.js"></script>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.css" rel="stylesheet">

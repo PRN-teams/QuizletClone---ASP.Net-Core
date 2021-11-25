@@ -309,7 +309,8 @@ namespace WebApplication1.Controllers
             user.Email = person.EmailAddresses.FirstOrDefault()?.Value;
             user.AvatarUrl = person.Photos.FirstOrDefault().Url;
             user.Username = person.Names.FirstOrDefault().DisplayName;
-            
+            _context.Add(user);
+            _context.SaveChanges();
             return RedirectToAction("Index", "Home");
         }
 
@@ -361,21 +362,122 @@ namespace WebApplication1.Controllers
                         numBytesRequested: 256 / 8));
                     user.Password = hashed;
                     //End encryption
-                    _context.Add(user);
-                    _context.SaveChanges();
-                    ViewBag.Success = "Register successfully!! Goes";
+                    TempData["VerifyUserNameRe"] = user.Username;
+                    TempData["VerifyUserPwRe"] = user.Password;
+                    TempData["VerifyUserDobRe"] = user.Dob;
+                    TempData["VerifyUserEmailRe"] = user.Email;
+                    TempData["VerifyUserAvaRe"] = user.AvatarUrl;
+                    var rand = new Random();
+                    TempData["KeyAuthRe"] = rand.Next(1000,10000);
+                    //Email & Content
+                    string MailBody1 =
+                        "<!DOCTYPE html>" +
+                               "<html>" + 
+                               "<body style=\"background-color: #f4f4f4; margin: 0 !important; padding: 0 !important;\">"
+   + "<div style = \"display: none; font-size: 1px; color: #fefefe; line-height: 1px; font-family: 'Lato', Helvetica, Arial, sans-serif; max-height: 0px; max-width: 0px; opacity: 0; overflow: hidden;\" > We're thrilled to have you here! Get ready to dive into your new account. </div>"
+  + "<table border = \"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">"
+  +
+       "<tr>"
+          + "<td bgcolor = \"#FFA73B\" align=\"center\">"
+             + "<table border = \"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" style=\"max-width: 600px;\">"
+                 + "<tr>"
+                    + "<td align = \"center\" valign=\"top\" style=\"padding: 40px 10px 40px 10px;\"> </td>"
+                 + "</tr>"
+               + "</table>"
+         + "</td>"
+      + "</tr>"
+        + "<tr>"
+          + "<td bgcolor = \"#FFA73B\" align=\"center\" style=\"padding: 0px 10px 0px 10px;\">"
+                           + "<table border = \"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" style=\"max-width: 600px;\">"
+                     + "<tr>"
+                      + "<td bgcolor = \"#ffffff\" align=\"center\" valign=\"top\" style=\"padding: 40px 20px 20px 20px; border-radius: 4px 4px 0px 0px; color: #111111; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 48px; font-weight: 400; letter-spacing: 4px; line-height: 48px;\">"
+                        + "<h1 style = \"font-size: 48px; font-weight: 400; margin: 2;\" > Welcome! </h1> <img src=\" https://img.icons8.com/clouds/100/000000/handshake.png\" width=\"125\" height=\"120\" style=\"display: block; border: 0px;\" />"
+                    + "</td>"
+                   + "</tr>"
+               + "</table>"
+            + "</td>"
+        + "</tr>"
+         + "<tr>"
+             + "<td bgcolor = \"#f4f4f4\" align=\"center\" style=\"padding: 0px 10px 0px 10px;\">"
+                                         + "<table border = \"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" style=\"max-width: 600px;\">"
+                  + "<tr>"
+                     + "<td bgcolor = \"#ffffff\" align=\"left\" style=\"padding: 20px 30px 40px 30px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;\">"
+                          + "<p style = \"margin: 0;\" > We're excited to have you get started. First, you need to confirm your account.Here is the code to confirm:</p>"
+                          + $"<h1 style=\"text-align: center;\">{TempData.Peek("KeyAuthRe")}</h1>"
+                                            + "</td>"
+                   + "</tr>"
+                  + "<tr>"
+                    +"<td bgcolor = \"#ffffff\" align = \"left\" style = \"padding: 0px 30px 20px 30px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;\" >"
+                    + "<p style = \"margin: 0;\" > If you have any questions, just reply to this email—we're always happy to help out.</p>"
+                           + "</td>"
+                       + "</tr>"
+                     + "<tr>"
+                     + "<td bgcolor = \"#ffffff\" align = \"left\" style = \"padding: 0px 30px 40px 30px; border-radius: 0px 0px 4px 4px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;\" >"
+                               +"<p style = \"margin: 0;\" > Cheers,<br> QuizletClone Support Team</p>"
+                                 +"</td>"
+                             + "</tr>"
+                      + "</table>"
+                      + "</td>"
+                + "</tr>"
+               + "<td bgcolor = \"#f4f4f4\" align = \"center\" style = \"padding: 30px 10px 0px 10px;\" >"
+                           +   "<table border = \"0\" cellpadding = \"0\" cellspacing = \"0\" width = \"100%\" style = \"max-width: 600px;\" >"
+                                      +"<tr>"
+                                         +"<td bgcolor = \"#FFECD1\" align = \"center\" style = \"padding: 30px 30px 30px 30px; border-radius: 4px 4px 4px 4px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;\" >"
+                                    +"<h2 style = \"font-size: 20px; font-weight: 400; color: #111111; margin: 0;\" > Need more help?</h2>"
+                                             +"<p style = \"margin: 0;\" ><a href = \"#\" target = \"_blank\" style = \"color: #FFA73B;\" > We're here to help you out</a></p>"
+                                              +"</td>"
+                                          + "</tr>"
+                                    + "</table>"
+                                  + "</td>"
+                              + "</tr>"
+                        + "</table>"
+                     + "</body> "
+                     + "</html>";
+                    string toemail = Convert.ToString(user.Email);
+                    MailMessage message = new MailMessage(new MailAddress("tranthe150186@fpt.edu.vn", "Email from Quizlet CLone"), new MailAddress(toemail));
+                    message.Subject = "Two-facor Verifycation";
+                    message.Body = MailBody1;
+                    message.IsBodyHtml = true;
+
+                    //Server Detail
+                    SmtpClient smtp = new SmtpClient();
+                    //gmail ports = 465(SSL) ir 587(TSL)
+                    smtp.Host = "smtp.gmail.com";
+                    smtp.Port = 587;
+                    smtp.EnableSsl = true;
+                    smtp.DeliveryMethod = SmtpDeliveryMethod.Network;
+
+                    //Credentials
+                    System.Net.NetworkCredential credential = new System.Net.NetworkCredential();
+                    credential.UserName = fromemail;
+                    credential.Password = "Jay.empty19";
+                    smtp.UseDefaultCredentials = false;
+                    smtp.Credentials = credential;
+
+                    smtp.Send(message);
+                    // _context.Add(user);
+                    //_context.SaveChanges();
+                  
+
                 }
                 catch (Exception)
                 {
-                    ViewBag.Err = "Username is already exist, please choose another name!";
+                    ViewBag.Error = "Username is already exist, please choose another name!";
                 }
             }
-            return View();
+            return RedirectToAction("TwoFactor", "Home");
+        }
 
+       
+
+        public IActionResult TwoFactor()
+        {
+
+            return View();
         }
 
 
-        public IActionResult Logout()
+            public IActionResult Logout()
         {
             HttpContext.Session.Clear();
             TempData.Clear();
@@ -429,7 +531,7 @@ namespace WebApplication1.Controllers
                + "<td style = \"padding:0 35px;\" >"
                + "<h1 style=\"color:#1e1e2d; font-weight:500; margin:0;font-size:32px;font-family:'Rubik',sans-serif;\">You have "
                     + "requested to reset your password</h1>"
-                  + "<span style = \"display:inline-block; vertical-align:middle; margin:29px 0 26px; border-bottom:1px solid #cecece; width:100px;\" ></ span >"
+                  + "<span style = \"display:inline-block; vertical-align:middle; margin:29px 0 26px; border-bottom:1px solid #cecece; width:100px;\" ></span>"
                    + "<p style=\"color:#455056; font-size:15px;line-height:24px; margin:0;\">"
                     + "We cannot simply send you your old password.A unique link to reset your"
                      + "password has been generated for you.To reset your password, click the"
