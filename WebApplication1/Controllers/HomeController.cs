@@ -68,6 +68,7 @@ namespace WebApplication1.Controllers
             {
 
                 TempData.Clear();
+                return RedirectToAction("Privacy", "Home");
             }
             ViewBag.QuizSet = mylist;
             ViewBag.TotalQuiz = gettotalTerm;
@@ -76,6 +77,10 @@ namespace WebApplication1.Controllers
 
         public IActionResult Privacy()
         {
+            if (TempData.Peek("username") != null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
             return View();
         }
 
