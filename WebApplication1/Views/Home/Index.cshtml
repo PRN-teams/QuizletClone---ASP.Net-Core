@@ -5,6 +5,10 @@
 @if (TempData.Peek("username") != null)
 {
     <h3 class="mt-5 text-light">Your Set</h3>
+    @if (ViewBag.MySet.Count==0)
+    {
+        <span>Hmm, Seems like you haven't has a Set yet</span>
+    }
     <div style="display: grid; grid-template-columns: auto auto auto;">
         @foreach (var item in ViewBag.MySet)
         {

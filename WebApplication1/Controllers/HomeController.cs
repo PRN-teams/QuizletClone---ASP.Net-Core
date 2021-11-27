@@ -316,6 +316,14 @@ namespace WebApplication1.Controllers
             user.Username = person.Names.FirstOrDefault().DisplayName;
             _context.Add(user);
             _context.SaveChanges();
+            HttpContext.Session.SetString("SessionuName", user.Username);
+            HttpContext.Session.SetInt32("SessionuID", (from u in _context.User where u.Email == user.Email select u.Id).SingleOrDefault());
+            HttpContext.Session.SetString("SessionuAva", user.AvatarUrl);
+            HttpContext.Session.SetString("SessionuEmail", user.Email);
+            HttpContext.Session.SetString("SessionuDOB", (user.Dob).ToString());
+            TempData["uid"] = HttpContext.Session.GetInt32("SessionuID");
+            TempData["username"] = HttpContext.Session.GetString("SessionuName");
+            TempData["userAva"] = HttpContext.Session.GetString("SessionuAva");
             return RedirectToAction("Index", "Home");
         }
 
@@ -334,7 +342,7 @@ namespace WebApplication1.Controllers
         {
             if (user.AvatarUrl == null)
             {
-                user.AvatarUrl = "https://avatars.dicebear.com/api/open-peeps/your-custom-seed.svg";
+                user.AvatarUrl = "https://avatars.dicebear.com/api/jdenticon/your-custom-seed.svg";
             }
 
             if (DateTime.Now.Year - user.Dob.Year <= 13)
@@ -440,7 +448,7 @@ namespace WebApplication1.Controllers
                      + "</html>";
                     string toemail = Convert.ToString(user.Email);
                     MailMessage message = new MailMessage(new MailAddress("tranthe150186@fpt.edu.vn", "Email from Quizlet CLone"), new MailAddress(toemail));
-                    message.Subject = "Two-facor Verifycation";
+                    message.Subject = "Two-factor Verifycation";
                     message.Body = MailBody1;
                     message.IsBodyHtml = true;
 
@@ -460,10 +468,6 @@ namespace WebApplication1.Controllers
                     smtp.Credentials = credential;
 
                     smtp.Send(message);
-                    // _context.Add(user);
-                    //_context.SaveChanges();
-                  
-
                 }
                 catch (Exception)
                 {
@@ -477,12 +481,146 @@ namespace WebApplication1.Controllers
 
         public IActionResult TwoFactor()
         {
-
-            return View();
+            if (TempData.ContainsKey("KeyAuthRe"))
+            {
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("Error", "Flashcard");
+            }  
+            
         }
 
+        [HttpPost]
+        public IActionResult TwoFactor(int key,int key1,int key2,int key3)
+        {
+            string test = TempData.Peek("KeyAuthRe").ToString();
+            string a = $"{key}{key1}{key2}{key3}";
+            if (a.Equals(test))
+            {
+                User user = new User()
+                {
+                    AvatarUrl = Convert.ToString(TempData["VerifyUserAvaRe"]),
+                    Username = Convert.ToString(TempData["VerifyUserNameRe"]),
+                    Password = Convert.ToString(TempData["VerifyUserPwRe"]),
+                    Dob = Convert.ToDateTime(TempData["VerifyUserDobRe"]),
+                    Email = Convert.ToString(TempData["VerifyUserEmailRe"]),
+                };
+                _context.Add(user);
+                _context.SaveChanges();
+                TempData.Remove("KeyAuthRe");
+                HttpContext.Session.SetString("SessionuName", user.Username);
+                HttpContext.Session.SetInt32("SessionuID", (from u in _context.User where u.Email == user.Email select u.Id).SingleOrDefault());
+                HttpContext.Session.SetString("SessionuAva", user.AvatarUrl);
+                HttpContext.Session.SetString("SessionuEmail", user.Email);
+                HttpContext.Session.SetString("SessionuDOB", (user.Dob).ToString());
+                TempData["uid"] = HttpContext.Session.GetInt32("SessionuID");
+                TempData["username"] = HttpContext.Session.GetString("SessionuName");
+                TempData["userAva"] = HttpContext.Session.GetString("SessionuAva");
+                return RedirectToAction("Index", "Home");
+            }
+            else
+            {
+                ViewBag.Error = "Incorrect, please try again!";
+                return View();
+            }
+            
+        }
 
-            public IActionResult Logout()
+        public IActionResult Resend()
+        {
+            var rand = new Random();
+            TempData["KeyAuthRe"] = rand.Next(1000, 10000);
+            //Email & Content
+            string MailBody1 =
+                "<!DOCTYPE html>" +
+                       "<html>" +
+                       "<body style=\"background-color: #f4f4f4; margin: 0 !important; padding: 0 !important;\">"
++ "<div style = \"display: none; font-size: 1px; color: #fefefe; line-height: 1px; font-family: 'Lato', Helvetica, Arial, sans-serif; max-height: 0px; max-width: 0px; opacity: 0; overflow: hidden;\" > We're thrilled to have you here! Get ready to dive into your new account. </div>"
++ "<table border = \"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">"
++
+"<tr>"
+  + "<td bgcolor = \"#FFA73B\" align=\"center\">"
+     + "<table border = \"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" style=\"max-width: 600px;\">"
+         + "<tr>"
+            + "<td align = \"center\" valign=\"top\" style=\"padding: 40px 10px 40px 10px;\"> </td>"
+         + "</tr>"
+       + "</table>"
+ + "</td>"
++ "</tr>"
++ "<tr>"
+  + "<td bgcolor = \"#FFA73B\" align=\"center\" style=\"padding: 0px 10px 0px 10px;\">"
+                   + "<table border = \"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" style=\"max-width: 600px;\">"
+             + "<tr>"
+              + "<td bgcolor = \"#ffffff\" align=\"center\" valign=\"top\" style=\"padding: 40px 20px 20px 20px; border-radius: 4px 4px 0px 0px; color: #111111; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 48px; font-weight: 400; letter-spacing: 4px; line-height: 48px;\">"
+                + "<h1 style = \"font-size: 48px; font-weight: 400; margin: 2;\" > Welcome! </h1> <img src=\" https://img.icons8.com/clouds/100/000000/handshake.png\" width=\"125\" height=\"120\" style=\"display: block; border: 0px;\" />"
+            + "</td>"
+           + "</tr>"
+       + "</table>"
+    + "</td>"
++ "</tr>"
+ + "<tr>"
+     + "<td bgcolor = \"#f4f4f4\" align=\"center\" style=\"padding: 0px 10px 0px 10px;\">"
+                                 + "<table border = \"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" style=\"max-width: 600px;\">"
+          + "<tr>"
+             + "<td bgcolor = \"#ffffff\" align=\"left\" style=\"padding: 20px 30px 40px 30px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;\">"
+                  + "<p style = \"margin: 0;\" > We're excited to have you get started. First, you need to confirm your account.Here is the code to confirm:</p>"
+                  + $"<h1 style=\"text-align: center;\">{TempData.Peek("KeyAuthRe")}</h1>"
+                                    + "</td>"
+           + "</tr>"
+          + "<tr>"
+            + "<td bgcolor = \"#ffffff\" align = \"left\" style = \"padding: 0px 30px 20px 30px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;\" >"
+            + "<p style = \"margin: 0;\" > If you have any questions, just reply to this email—we're always happy to help out.</p>"
+                   + "</td>"
+               + "</tr>"
+             + "<tr>"
+             + "<td bgcolor = \"#ffffff\" align = \"left\" style = \"padding: 0px 30px 40px 30px; border-radius: 0px 0px 4px 4px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;\" >"
+                       + "<p style = \"margin: 0;\" > Cheers,<br> QuizletClone Support Team</p>"
+                         + "</td>"
+                     + "</tr>"
+              + "</table>"
+              + "</td>"
+        + "</tr>"
+       + "<td bgcolor = \"#f4f4f4\" align = \"center\" style = \"padding: 30px 10px 0px 10px;\" >"
+                   + "<table border = \"0\" cellpadding = \"0\" cellspacing = \"0\" width = \"100%\" style = \"max-width: 600px;\" >"
+                              + "<tr>"
+                                 + "<td bgcolor = \"#FFECD1\" align = \"center\" style = \"padding: 30px 30px 30px 30px; border-radius: 4px 4px 4px 4px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;\" >"
+                            + "<h2 style = \"font-size: 20px; font-weight: 400; color: #111111; margin: 0;\" > Need more help?</h2>"
+                                     + "<p style = \"margin: 0;\" ><a href = \"#\" target = \"_blank\" style = \"color: #FFA73B;\" > We're here to help you out</a></p>"
+                                      + "</td>"
+                                  + "</tr>"
+                            + "</table>"
+                          + "</td>"
+                      + "</tr>"
+                + "</table>"
+             + "</body> "
+             + "</html>";
+            string toemail = Convert.ToString(TempData.Peek("VerifyUserEmailRe"));
+            MailMessage message = new MailMessage(new MailAddress("tranthe150186@fpt.edu.vn", "Email from Quizlet CLone"), new MailAddress(toemail));
+            message.Subject = "Two-factor Verifycation";
+            message.Body = MailBody1;
+            message.IsBodyHtml = true;
+
+            //Server Detail
+            SmtpClient smtp = new SmtpClient();
+            //gmail ports = 465(SSL) ir 587(TSL)
+            smtp.Host = "smtp.gmail.com";
+            smtp.Port = 587;
+            smtp.EnableSsl = true;
+            smtp.DeliveryMethod = SmtpDeliveryMethod.Network;
+
+            //Credentials
+            System.Net.NetworkCredential credential = new System.Net.NetworkCredential();
+            credential.UserName = fromemail;
+            credential.Password = "Jay.empty19";
+            smtp.UseDefaultCredentials = false;
+            smtp.Credentials = credential;
+            smtp.Send(message);
+            return RedirectToAction("TwoFactor", "Home");
+        }
+
+        public IActionResult Logout()
         {
             HttpContext.Session.Clear();
             TempData.Clear();

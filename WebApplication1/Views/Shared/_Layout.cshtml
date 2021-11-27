@@ -64,7 +64,7 @@
                             @if (TempData.ContainsKey("username"))
                             {
                                 <span class="text-light">
-                                    <img src="@TempData.Peek("userAva")" style="width:35%;height:85%;cursor:pointer" class="dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" />
+                                    <img src="@TempData.Peek("userAva")" style="border: 1px solid; border-radius: 50%; padding: 4px; width: 25%; height: 85%; cursor: pointer" class="dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" />
                                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                         <a class="dropdown-item" asp-controller="Flashcard" asp-action="Users" asp-route-id="@TempData.Peek("uid")">Account</a>
                                         <a class="dropdown-item" asp-controller="Home" asp-action="Logout">Log out</a>
@@ -96,7 +96,7 @@
 
     <footer class="border-top footer text-light bg-dark">
         <div class="container text-light">
-            &copy; 2021 - QuizletClone - <a class="text-info" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            &copy; 2021 - QuizletClone Inc
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

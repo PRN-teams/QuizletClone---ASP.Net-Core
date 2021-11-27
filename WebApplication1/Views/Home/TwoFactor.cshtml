@@ -13,6 +13,7 @@
         width: 80%;
         height: 80%;
     }
+
     .font-roboto {
         font-family: 'Roboto', sans-serif;
     }
@@ -67,15 +68,22 @@
             color: #efefef;
             border: none;
         }
-        input{
-            margin:0 10px;
-        }
+
+    input {
+        margin: 0 10px;
+    }
 </style>
 <section id="main-site">
     <div class="glass text-center">
 
         <!-- title -->
         <div class="title">
+            <div class="alert alert-success alert-dismissible fade show" role="alert" style="display:none">
+                Resend successfully!! Please check your mail again!
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
             <h1 class="font-poppins text-white">Two-Factor Authentication</h1>
             <img src="~/img/2FA.png" class="img-fluid" alt="">
 
@@ -83,23 +91,60 @@
         </div>
 
         <!-- form -->
-        <form action="" class="py-2">
-            <h4 class="font-poppins text-light">Enter your OTP Code Here:</h4>
+        @using (Html.BeginForm("TwoFactor", "Home", FormMethod.Post))
+        {
+            <form action="" class="py-2">
+                <h4 class="font-poppins text-light">Enter your OTP Code Here:</h4>
 
-            <div class="col py-1 my-3 d-flex" style="margin-left:-9%">
-                <input type="text" maxlength="1" oninput="this.value = this.value.replace(/[\D]/g, '').replace(/(\..*?)\..*/g, '$1');" autocomplete="off" class="form-control" placeholder="-">
-                <input type="text" maxlength="1" oninput="this.value = this.value.replace(/[\D]/g, '').replace(/(\..*?)\..*/g, '$1');" autocomplete="off" class="form-control" placeholder="-">
-                <input type="text" maxlength="1" oninput="this.value = this.value.replace(/[\D]/g, '').replace(/(\..*?)\..*/g, '$1');" autocomplete="off" class="form-control" placeholder="-">
-                <input type="text" maxlength="1" oninput="this.value = this.value.replace(/[\D]/g, '').replace(/(\..*?)\..*/g, '$1');" autocomplete="off" class="form-control" placeholder="-">
-            </div>
+                <div class="col py-1 my-3 d-flex" style="margin-left:-9%">
+                    @Html.TextBox("key", "", new { @id = "myInput", @maxlength = "1", @oninput = "myFunction()", @autocomplete = "off", @class = "form-control", @placeholder = "-" })
+                    @Html.TextBox("key1", "", new { @id = "myInput", @maxlength = "1", @oninput = "myFunction()", @autocomplete = "off", @class = "form-control", @placeholder = "-" })
+                    @Html.TextBox("key2", "", new { @id = "myInput", @maxlength = "1", @oninput = "myFunction()", @autocomplete = "off", @class = "form-control", @placeholder = "-" })
+                    @Html.TextBox("key3", "", new { @id = "myInput", @maxlength = "1", @oninput = "myFunction()", @autocomplete = "off", @class = "form-control", @placeholder = "-" })
+                </div>
+                @if (ViewBag.Error != null)
+                {
+                    <div class="alert alert-warning" role="alert">
+                        @ViewBag.Error
+                    </div>
+                }
 
-            <div class="col">
-                <button type="submit" class="btn">Verify</button>
-            </div>
+                <div class="col">
+                    <button type="submit" id="button" class="btn">Verify</button>
+                </div>
 
-            <div class="py-1">
-                <p class="font-poppins text-light">Not received your code? <a href="" class="link">Resend</a></p>
-            </div>
-        </form>
+                <div class="py-1">
+                    <p class="font-poppins text-light">Not received your code? <a asp-controller="Home" asp-action="Resend" class="link">Resend</a></p>
+                </div>
+
+            </form>
+        }
+
     </div>
 </section>
+@section Scripts {
+    <script>
+        //Verify Input
+        function myFunction() {
+            var x = document.getElementById("myInput");
+            x.value = x.value.replace(/[\D]/g, '').replace(/(\..*?)\..*/g, '$1');
+        }
+
+        //Allow Redirect or reload if submit form
+        document.getElementById('button').onclick = function () {
+            window.onbeforeunload = null;
+        };
+
+        //Prevent redirect or reload if form DIDN'T submitted
+        window.onbeforeunload = function () {
+            return 'If you leave rightnow,the code for verivication is going to be expire. Are you sure you want to leave?';
+        };
+
+        //Resend Onclick
+        $(".link").click(function () {
+            window.onbeforeunload = null;
+            $(".alert-dismissible").css("display", "inline-block");
+        });
+     //End check
+    </script>
+}
