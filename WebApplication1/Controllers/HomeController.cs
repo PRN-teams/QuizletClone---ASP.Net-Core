@@ -1,9 +1,13 @@
 ﻿using Google.Apis.Auth.AspNetCore3;
 using Google.Apis.PeopleService.v1;
 using Google.Apis.Services;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.Facebook;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
@@ -11,7 +15,9 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Net;
 using System.Net.Mail;
+using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
 using WebApplication1.Models;
@@ -232,6 +238,7 @@ namespace WebApplication1.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult Login(User user)
         {
                 try
@@ -257,6 +264,28 @@ namespace WebApplication1.Controllers
             
         }
 
+        //Facebook Oauth Part -- Login
+        public IActionResult FacebookAuth()
+        {
+            var property = new AuthenticationProperties
+            {
+                RedirectUri = Url.Action("FacebookResponse")
+            };
+            return Challenge(property, FacebookDefaults.AuthenticationScheme) ;
+        }
+
+        public async Task<IActionResult> FacebookResponse()
+        {
+            var result = await HttpContext.AuthenticateAsync(FacebookDefaults.AuthenticationScheme);
+            var email = result.Principal.Identities.FirstOrDefault().Claims.Select(claim => new {
+            claim.Issuer,
+            claim.OriginalIssuer,
+            claim.Type,
+            claim.Value});
+            
+            return View();
+        }
+
         //Google Oauth Part -- Login
         [GoogleScopedAuthorize(PeopleServiceService.ScopeConstants.UserinfoProfile)]
         public async Task<IActionResult> GoogleAuth([FromServices] IGoogleAuthProvider auth)
@@ -274,7 +303,6 @@ namespace WebApplication1.Controllers
             var info = person.EmailAddresses.FirstOrDefault()?.Value;
             try
             {
-               
                 var listUser = (from u in _context.User where u.Email == info select u).SingleOrDefault();
                 HttpContext.Session.SetString("SessionuName", listUser.Username);
                 HttpContext.Session.SetInt32("SessionuID", listUser.Id);
@@ -310,21 +338,36 @@ namespace WebApplication1.Controllers
             var request = service.People.Get("people/me");
             request.PersonFields = "emailAddresses,photos,names,birthdays";
             var person = await request.ExecuteAsync();
-            User user = new User();
-            user.Email = person.EmailAddresses.FirstOrDefault()?.Value;
-            user.AvatarUrl = person.Photos.FirstOrDefault().Url;
-            user.Username = person.Names.FirstOrDefault().DisplayName;
-            _context.Add(user);
-            _context.SaveChanges();
-            HttpContext.Session.SetString("SessionuName", user.Username);
-            HttpContext.Session.SetInt32("SessionuID", (from u in _context.User where u.Email == user.Email select u.Id).SingleOrDefault());
-            HttpContext.Session.SetString("SessionuAva", user.AvatarUrl);
-            HttpContext.Session.SetString("SessionuEmail", user.Email);
-            HttpContext.Session.SetString("SessionuDOB", (user.Dob).ToString());
-            TempData["uid"] = HttpContext.Session.GetInt32("SessionuID");
-            TempData["username"] = HttpContext.Session.GetString("SessionuName");
-            TempData["userAva"] = HttpContext.Session.GetString("SessionuAva");
-            return RedirectToAction("Index", "Home");
+            var info = person.EmailAddresses.FirstOrDefault()?.Value;
+            try
+            {
+                var listUser = (from u in _context.User where u.Email == info select u).SingleOrDefault();
+                foreach (var cookie in HttpContext.Request.Cookies)
+                {
+                    Response.Cookies.Delete(cookie.Key);
+                }
+                TempData["ReErr"] = "Account is already exist, please try again!";
+                return RedirectToAction("Register", "Home");
+            }
+            catch (Exception)
+            {
+                User user = new User();
+                user.Email = person.EmailAddresses.FirstOrDefault()?.Value;
+                user.AvatarUrl = person.Photos.FirstOrDefault().Url;
+                user.Username = person.Names.FirstOrDefault().DisplayName;
+                _context.Add(user);
+                _context.SaveChanges();
+                HttpContext.Session.SetString("SessionuName", user.Username);
+                HttpContext.Session.SetInt32("SessionuID", (from u in _context.User where u.Email == user.Email select u.Id).SingleOrDefault());
+                HttpContext.Session.SetString("SessionuAva", user.AvatarUrl);
+                HttpContext.Session.SetString("SessionuEmail", user.Email);
+                HttpContext.Session.SetString("SessionuDOB", (user.Dob).ToString());
+                TempData["uid"] = HttpContext.Session.GetInt32("SessionuID");
+                TempData["username"] = HttpContext.Session.GetString("SessionuName");
+                TempData["userAva"] = HttpContext.Session.GetString("SessionuAva");
+                return RedirectToAction("Index", "Home");
+            }
+           
         }
 
         public IActionResult Register()
@@ -345,7 +388,7 @@ namespace WebApplication1.Controllers
                 user.AvatarUrl = "https://avatars.dicebear.com/api/jdenticon/your-custom-seed.svg";
             }
 
-            if (DateTime.Now.Year - user.Dob.Year <= 13)
+            if (DateTime.Now.Year - user.Dob.Value.Year <= 13)
             {
                 ViewBag.ValidYear = " Your age is not enough to Register, please check again! You should be older than 13 at least!";
                 return View();
@@ -480,7 +523,7 @@ namespace WebApplication1.Controllers
        
 
         public IActionResult TwoFactor()
-        {
+         {
             if (TempData.ContainsKey("KeyAuthRe"))
             {
                 return View();

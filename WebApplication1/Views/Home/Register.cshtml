@@ -91,6 +91,15 @@
                                     <h4 class="text-secondary">Or</h4>
                                     <hr />
                                 </div>
+                                @if(TempData["ReErr"]!=null){
+                                     <div class="alert alert-info alert-dismissible fade show" role="alert">
+                                     <strong>This account is already exist!!</strong> Please check again!
+                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                                 <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                </div>
+                                }
+                               
                                 @using (Html.BeginForm("Register", "Home", FormMethod.Post))
                                 {
                                     <div class="form-outline mb-4">

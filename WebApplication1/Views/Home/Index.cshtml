@@ -7,7 +7,8 @@
     <h3 class="mt-5 text-light">Your Set</h3>
     @if (ViewBag.MySet.Count==0)
     {
-        <span>Hmm, Seems like you haven't has a Set yet</span>
+        <span style="display:flex"><h4 class="text-warning">Hmm, Seems like you haven't has a Set yet!</h4> <a  asp-controller="Home" asp-action="CreateQuiz" style="font-size:x-large" class="text-info">Create one!</a></span>
+            
     }
     <div style="display: grid; grid-template-columns: auto auto auto;">
         @foreach (var item in ViewBag.MySet)

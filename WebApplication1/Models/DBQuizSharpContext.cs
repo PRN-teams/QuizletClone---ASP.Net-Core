@@ -246,7 +246,6 @@ namespace WebApplication1.Models
                     .IsUnicode(false);
 
                 entity.Property(e => e.Password)
-                    .IsRequired()
                     .HasColumnName("password")
                     .HasMaxLength(50)
                     .IsUnicode(false);

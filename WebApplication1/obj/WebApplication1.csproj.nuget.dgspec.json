@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Macbook Pro\\Source\\Repos\\QuizletClone---ASP.Net-Core\\WebApplication1\\WebApplication1.csproj": {}
+    "C:\\Users\\Macbook Pro\\source\\repos\\QuizletClone---ASP.Net-Core\\WebApplication1\\WebApplication1.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Macbook Pro\\Source\\Repos\\QuizletClone---ASP.Net-Core\\WebApplication1\\WebApplication1.csproj": {
+    "C:\\Users\\Macbook Pro\\source\\repos\\QuizletClone---ASP.Net-Core\\WebApplication1\\WebApplication1.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Macbook Pro\\Source\\Repos\\QuizletClone---ASP.Net-Core\\WebApplication1\\WebApplication1.csproj",
+        "projectUniqueName": "C:\\Users\\Macbook Pro\\source\\repos\\QuizletClone---ASP.Net-Core\\WebApplication1\\WebApplication1.csproj",
         "projectName": "WebApplication1",
-        "projectPath": "C:\\Users\\Macbook Pro\\Source\\Repos\\QuizletClone---ASP.Net-Core\\WebApplication1\\WebApplication1.csproj",
+        "projectPath": "C:\\Users\\Macbook Pro\\source\\repos\\QuizletClone---ASP.Net-Core\\WebApplication1\\WebApplication1.csproj",
         "packagesPath": "C:\\Users\\Macbook Pro\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Macbook Pro\\Source\\Repos\\QuizletClone---ASP.Net-Core\\WebApplication1\\obj\\",
+        "outputPath": "C:\\Users\\Macbook Pro\\source\\repos\\QuizletClone---ASP.Net-Core\\WebApplication1\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Macbook Pro\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -129,7 +129,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.403\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.100\\RuntimeIdentifierGraph.json"
         }
       }
     }

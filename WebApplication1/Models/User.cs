@@ -21,7 +21,7 @@ namespace WebApplication1.Models
         public string Password { get; set; }
         public string AvatarUrl { get; set; }
         public string Email { get; set; }
-        public DateTime Dob { get; set; }
+        public DateTime? Dob { get; set; }
 
         public virtual ICollection<Bill> Bill { get; set; }
         public virtual ICollection<Contract> Contract { get; set; }

@@ -53,6 +53,11 @@ namespace WebApplication1
          o.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                 })
                   .AddCookie()
+                  .AddFacebook(options =>
+                  {
+                      options.AppId = Configuration["Authentication:Facebook:AppId"];
+                      options.AppSecret = Configuration["Authentication:Facebook:AppSecret"];
+                  })
                   .AddGoogleOpenIdConnect(options =>
                   {
                       IConfigurationSection googleAuthNSection =
