@@ -64,12 +64,12 @@
                             @if (TempData.ContainsKey("username"))
                             {
                                 <span class="text-light">
-                                    <img src="@TempData.Peek("userAva")" style="border: 1px solid; border-radius: 50%; padding: 4px; width: 25%; height: 85%; cursor: pointer" class="dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" />
+                                    <img src="@TempData.Peek("userAva")" style="border: 1px solid; border-radius: 50%; width: 30%; cursor: pointer" class="dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" />
                                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                         <a class="dropdown-item" asp-controller="Flashcard" asp-action="Users" asp-route-id="@TempData.Peek("uid")">Account</a>
                                         <a class="dropdown-item" asp-controller="Home" asp-action="Logout">Log out</a>
                                     </div>
-                                    Hello @TempData.Peek("username")!!
+                                    @TempData.Peek("username")!!
                                 </span>
                             }
                             else

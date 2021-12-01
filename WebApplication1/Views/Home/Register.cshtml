@@ -74,6 +74,13 @@
                                     </div>
                                     <a class="text-uppercase h3 text-decoration-none text-dark" asp-action="Login" asp-controller="Home">SignIn</a>
                                 </div>
+                                 @if (TempData.ContainsKey("Re-errorFB"))
+                                        {
+                                           <div class="alert alert-primary mt-2" role="alert">
+                                              @TempData["Re-errorFB"] 
+                                           </div>
+                                        }
+
                                 <a asp-action="FacebookRegister" asp-controller="Home" style="width:350px" class="btn btn-outline-primary py-2 mx-4 my-3">
                                     <i class="fab fa-facebook-f pr-5"></i>
                                     Continue with Facebook
@@ -82,7 +89,7 @@
                                     <i class="fab fa-google pr-5"></i>
                                     Continue with Google
                                 </a>
-                                <a asp-action="AppleRegister" asp-controller="Home" style="width:350px" class="btn btn-outline-success py-2  mx-4 mb-3">
+                                <a href="#" style="width:350px" class="btn btn-outline-success py-2  mx-4 mb-3">
                                     <i class="fab fa-apple pr-5"></i>
                                     Continue with Apple
                                 </a>

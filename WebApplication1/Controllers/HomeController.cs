@@ -11,16 +11,19 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Net.Mail;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
 using WebApplication1.Models;
+using WebMatrix.WebData;
 
 namespace WebApplication1.Controllers
 {
@@ -269,7 +272,8 @@ namespace WebApplication1.Controllers
         {
             var property = new AuthenticationProperties
             {
-                RedirectUri = Url.Action("FacebookResponse")
+                RedirectUri = Url.Action("FacebookResponse"),
+                AllowRefresh = true,
             };
             return Challenge(property, FacebookDefaults.AuthenticationScheme) ;
         }
@@ -277,13 +281,86 @@ namespace WebApplication1.Controllers
         public async Task<IActionResult> FacebookResponse()
         {
             var result = await HttpContext.AuthenticateAsync(FacebookDefaults.AuthenticationScheme);
-            var email = result.Principal.Identities.FirstOrDefault().Claims.Select(claim => new {
-            claim.Issuer,
-            claim.OriginalIssuer,
-            claim.Type,
-            claim.Value});
-            
-            return View();
+            var email = result.Principal.FindFirstValue(ClaimTypes.Email);
+            try
+            {
+                var listUser = (from u in _context.User where u.Email == email select u).SingleOrDefault();
+                HttpContext.Session.SetString("SessionuName", listUser.Username);
+                HttpContext.Session.SetInt32("SessionuID", listUser.Id);
+                HttpContext.Session.SetString("SessionuAva", listUser.AvatarUrl);
+                HttpContext.Session.SetString("SessionuEmail", listUser.Email);
+                HttpContext.Session.SetString("SessionuDOB", (listUser.Dob).ToString());
+                TempData["uid"] = HttpContext.Session.GetInt32("SessionuID");
+                TempData["username"] = HttpContext.Session.GetString("SessionuName");
+                TempData["userAva"] = HttpContext.Session.GetString("SessionuAva");
+                return RedirectToAction("Index", "Home");
+            }
+            catch (Exception)
+            {
+                TempData["errorFB"] = "Your Facebook account is didn't linked with us yet!! Do you want to";
+                return View("Login");
+            }
+        }
+
+        //Facebook Oauth Part -- Register
+        public IActionResult FacebookRegister()
+        {
+            var property = new AuthenticationProperties
+            {
+                RedirectUri = Url.Action("FacebookRes"),
+                AllowRefresh = true,
+            };
+            return Challenge(property, FacebookDefaults.AuthenticationScheme);
+        }
+
+        public async Task<IActionResult> FacebookRes()
+        {
+            var result = await HttpContext.AuthenticateAsync(FacebookDefaults.AuthenticationScheme);
+            var email = result.Principal.FindFirstValue(ClaimTypes.Email);
+            try
+            {
+                var listUser = (from u in _context.User where u.Email == email select u).Single();
+                TempData["Re-errorFB"] = "Your Facebook account is already exist!!";
+                return View("Register");
+            }
+            catch (Exception)
+            {
+                User user = new User();
+                user.Email = email;
+                user.Username = result.Principal.FindFirstValue(ClaimTypes.Name);
+                user.Dob = Convert.ToDateTime(result.Principal.FindFirstValue(ClaimTypes.DateOfBirth));
+                user.AvatarUrl = $"https://graph.facebook.com/{result.Principal.FindFirstValue(ClaimTypes.NameIdentifier)}/picture";
+
+                //Advance to get more information
+                /*
+                string userToken = "EAAaw7Il09cABAHFNTKGLKxXVfq2PZC9jjEv8sQqzTaeRkP6fHsfJMgnpDOohYtwGaASZBV0hJxRkxLQeqjnxSE7u57ZBafZCOJFQ1pQWrKMBv2gx56ab9qygO2bG76ZCI7AJ3fmin8ESc9j3pMcwSyjJyYbSmcZABOhpHZCmedZASyYUtebqEDpHKOFrM1kc1cjm3HRm5LGdqG4TVdnxCh7P3G5zsqUImjMqHtmhwExuNk4pqVSAg4qRbVC2Q7UtS98ZD";
+
+                using (var client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri("https://graph.facebook.com");
+
+                    HttpResponseMessage response = client.GetAsync($"me?fields=name,picture,email&access_token={userToken}").Result;
+
+                    response.EnsureSuccessStatusCode();
+                    string userDetail = response.Content.ReadAsStringAsync().Result;
+
+                    var jsonRes = JsonConvert.DeserializeObject<dynamic>(userDetail);
+
+                    picture = jsonRes["picture"].ToString();
+                }
+                */
+                _context.Add(user);
+                _context.SaveChanges();
+                HttpContext.Session.SetString("SessionuName", user.Username);
+                HttpContext.Session.SetInt32("SessionuID", (from u in _context.User where u.Email == user.Email select u.Id).SingleOrDefault());
+                HttpContext.Session.SetString("SessionuAva", user.AvatarUrl);
+                HttpContext.Session.SetString("SessionuEmail", user.Email);
+                HttpContext.Session.SetString("SessionuDOB", (user.Dob).ToString());
+                TempData["uid"] = HttpContext.Session.GetInt32("SessionuID");
+                TempData["username"] = HttpContext.Session.GetString("SessionuName");
+                TempData["userAva"] = HttpContext.Session.GetString("SessionuAva");
+                return RedirectToAction("Index", "Home");
+            }
         }
 
         //Google Oauth Part -- Login
@@ -341,7 +418,7 @@ namespace WebApplication1.Controllers
             var info = person.EmailAddresses.FirstOrDefault()?.Value;
             try
             {
-                var listUser = (from u in _context.User where u.Email == info select u).SingleOrDefault();
+                var listUser = (from u in _context.User where u.Email == info select u).Single();
                 foreach (var cookie in HttpContext.Request.Cookies)
                 {
                     Response.Cookies.Delete(cookie.Key);

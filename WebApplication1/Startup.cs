@@ -100,7 +100,6 @@ namespace WebApplication1
 
             app.UseSession();
             app.UseRouting();
-
             app.UseAuthentication();
             app.UseAuthorization();
 

@@ -33,6 +33,7 @@
         "dependencies": {
           "Google.Apis.Auth.AspNetCore3": "1.55.0",
           "Google.Apis.PeopleService.v1": "1.55.0.2437",
+          "Microsoft.AspNet.WebPages.WebData": "3.2.7",
           "Microsoft.AspNetCore.Authentication.Facebook": "3.1.21",
           "Microsoft.AspNetCore.Authentication.Google": "3.1.21",
           "Microsoft.AspNetCore.Authentication.OAuth": "2.2.0",
@@ -396,6 +397,31 @@
         },
         "compile": {
           "lib/netstandard2.0/Google.Apis.PeopleService.v1.dll": {}
+        }
+      },
+      "Microsoft.AspNet.WebPages.Data/3.2.7": {
+        "runtime": {
+          "lib/net45/WebMatrix.Data.dll": {
+            "assemblyVersion": "3.0.0.0",
+            "fileVersion": "3.0.61128.0"
+          }
+        },
+        "compile": {
+          "lib/net45/WebMatrix.Data.dll": {}
+        }
+      },
+      "Microsoft.AspNet.WebPages.WebData/3.2.7": {
+        "dependencies": {
+          "Microsoft.AspNet.WebPages.Data": "3.2.7"
+        },
+        "runtime": {
+          "lib/net45/WebMatrix.WebData.dll": {
+            "assemblyVersion": "3.0.0.0",
+            "fileVersion": "3.0.61128.0"
+          }
+        },
+        "compile": {
+          "lib/net45/WebMatrix.WebData.dll": {}
         }
       },
       "Microsoft.AspNetCore.Authentication/2.2.0": {
@@ -3384,6 +3410,20 @@
       "sha512": "sha512-D1n7EaMT+S7vpWVcvnJms6EbI+kmMQ4wIPMEWhDls9/138uH2iUyfUoSMkH90n35P0t9XpR8z4pThgE8fktuNQ==",
       "path": "google.apis.peopleservice.v1/1.55.0.2437",
       "hashPath": "google.apis.peopleservice.v1.1.55.0.2437.nupkg.sha512"
+    },
+    "Microsoft.AspNet.WebPages.Data/3.2.7": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-wRnglowAe94/SMZpwEYKfXLe6U0yYu4bxMOBPIZyBAH0WE8m8I3wU43p7ZTOCTfOLWHalJ3cvN73Y23BBZqPbg==",
+      "path": "microsoft.aspnet.webpages.data/3.2.7",
+      "hashPath": "microsoft.aspnet.webpages.data.3.2.7.nupkg.sha512"
+    },
+    "Microsoft.AspNet.WebPages.WebData/3.2.7": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-AxvuTZdF1Z216x0ErUw/84QNsf42PuSFr0V3tUAzm8v0tVdg2SYTgRRxF9TgTRfkG3RA1Om5dmlyS3x3/MYotQ==",
+      "path": "microsoft.aspnet.webpages.webdata/3.2.7",
+      "hashPath": "microsoft.aspnet.webpages.webdata.3.2.7.nupkg.sha512"
     },
     "Microsoft.AspNetCore.Authentication/2.2.0": {
       "type": "package",
