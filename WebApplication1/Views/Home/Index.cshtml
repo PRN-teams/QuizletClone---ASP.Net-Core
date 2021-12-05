@@ -2,6 +2,147 @@
 @{
     ViewData["Title"] = "Home Page";
 }
+@if (@TempData.Peek("isNormal").Equals("normal"))
+{
+ <!-- Pop-up Ads  -->
+    <div class="myADs">
+        <div class="popup">
+            <div class="contentBox">
+                <div class="closeBtn" onclick="CloseFunc()">
+                    <i class="fas fa-times"></i>
+                </div>
+                <div class="offer">
+                    <div>
+                     <h4 style="font-size:xxx-large;color:#6363aa"> QuizletPlus </h4>
+                     <h6 style="margin-bottom:7%">Learning methods to help you achieve your goals</h6>
+                    <h2>20<sup>%</sup><span>Off</span></h2>
+                    <p style="margin-bottom: -0.2rem">Get Premium account to custom study paths, keep track of learning Progress, and use smart grading to focus on concepts instead of rote memorization.  🚀</p>
+                    <a asp-controller="Payment" asp-action="QuizletPlus" > Find out more </a>
+                    </div>
+                 </div>
+                <div class="imgBx">
+                    <img src="https://i.pinimg.com/564x/5e/21/d2/5e21d2153e95f04c807847098fea57a3.jpg" alt="">
+                </div>
+            </div>
+        </div>
+    </div>   
+}
+    <style>
+        .closeBtn{
+            position: absolute;
+            top: 10px;
+            left: 20px;
+            width: 40px;
+            height: 40px;
+            z-index: 99;
+            cursor: pointer;
+        }
+        .contentBox .offer{
+            position: relative;
+            width: 300px;
+            height: 400px;
+            display: flex;
+            align-items: center;
+            text-align: center;
+            padding:0 5%;
+        }
+        .contentBox .offer h3{
+            color: #333;
+            line-height: 1em;
+            font-weight:300;
+            font-size: 2em;
+        }
+        .contentBox .offer h2{
+            color: #ff4d54;
+            line-height: 1em;
+            font-size: 4em;
+        }
+        .contentBox .offer h2 span{
+            color: #333;
+            text-transform: uppercase;
+            font-size: 0.75em;
+        }
+        .contentBox .offer p{
+            font-weight: 300;
+        }
+
+        .contentBox .offer a{
+           display: inline-block;
+           padding: 10px 20px;
+           background: rgb(231, 174, 67);
+           color: white;
+           margin-top: 15px;
+           text-decoration: none;
+           border-radius: 10px;
+        }
+        .myADs{
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            position: absolute;
+            top: 0;
+            z-index:99;
+            display: none;
+        }
+
+       
+        .popup{
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%,-50%);
+            animation: mymove 1s;
+        }
+
+         @@keyframes mymove {
+            from {top: 0px;}
+            to {top: 50%;}
+          }
+
+        .contentBox{
+            position: relative;
+            width: 600px;
+            height: 400px;
+            background: white;
+            border-radius: 20px;
+            display: flex;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            justify-content: space-between;
+        }
+        .contentBox .imgBx{
+            position: relative;
+            width: 300px;
+            height: 400px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .contentBox .imgBx::before{
+            content: '';
+            position: absolute;
+            border-radius: 50%;
+        }
+        .contentBox .imgBx img{
+            position: relative;
+            width: 320px;
+            height: 400px;
+        }
+    </style>
+    <!-- Automatic show pop-up after 2 seconds of pages load  -->
+    <script>
+        const popup = document.querySelector('.myADs');
+        const close = document.querySelector('fa-times');
+        window.onload = function(){
+            setTimeout(function(){
+                popup.style.display = "block"
+            })
+        }
+
+        function CloseFunc(){
+            popup.style.display = "none"
+        }
+    </script>
+    <!-- End Pop-up Ads  -->
 @if (TempData.Peek("username") != null)
 {
     <h3 class="mt-5 text-light">Your Set</h3>

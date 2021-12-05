@@ -252,10 +252,12 @@ namespace WebApplication1.Controllers
                     HttpContext.Session.SetString("SessionuAva", listUser.AvatarUrl);
                     HttpContext.Session.SetString("SessionuEmail", listUser.Email);
                     HttpContext.Session.SetString("SessionuDOB", (listUser.Dob).ToString());
+                    TempData["isNormal"] = (from a in _context.Account where a.UId == listUser.Id select a.Status).Single();
                     TempData["uid"] = HttpContext.Session.GetInt32("SessionuID");
                     TempData["username"] = HttpContext.Session.GetString("SessionuName");
                     TempData["userAva"] = HttpContext.Session.GetString("SessionuAva");
-                    return RedirectToAction("Index", "Home");
+                    TempData["userEmail"] = HttpContext.Session.GetString("SessionuEmail");
+                return RedirectToAction("Index", "Home");
 
 
                 }
@@ -290,9 +292,11 @@ namespace WebApplication1.Controllers
                 HttpContext.Session.SetString("SessionuAva", listUser.AvatarUrl);
                 HttpContext.Session.SetString("SessionuEmail", listUser.Email);
                 HttpContext.Session.SetString("SessionuDOB", (listUser.Dob).ToString());
+                TempData["isNormal"] = (from a in _context.Account where a.UId == listUser.Id select a.Status).Single();
                 TempData["uid"] = HttpContext.Session.GetInt32("SessionuID");
                 TempData["username"] = HttpContext.Session.GetString("SessionuName");
                 TempData["userAva"] = HttpContext.Session.GetString("SessionuAva");
+                TempData["userEmail"] = HttpContext.Session.GetString("SessionuEmail");
                 return RedirectToAction("Index", "Home");
             }
             catch (Exception)
@@ -331,7 +335,7 @@ namespace WebApplication1.Controllers
                 user.Dob = Convert.ToDateTime(result.Principal.FindFirstValue(ClaimTypes.DateOfBirth));
                 user.AvatarUrl = $"https://graph.facebook.com/{result.Principal.FindFirstValue(ClaimTypes.NameIdentifier)}/picture";
 
-                //Advance to get more information
+                //Advance to get more information by GRAPH-API
                 /*
                 string userToken = "EAAaw7Il09cABAHFNTKGLKxXVfq2PZC9jjEv8sQqzTaeRkP6fHsfJMgnpDOohYtwGaASZBV0hJxRkxLQeqjnxSE7u57ZBafZCOJFQ1pQWrKMBv2gx56ab9qygO2bG76ZCI7AJ3fmin8ESc9j3pMcwSyjJyYbSmcZABOhpHZCmedZASyYUtebqEDpHKOFrM1kc1cjm3HRm5LGdqG4TVdnxCh7P3G5zsqUImjMqHtmhwExuNk4pqVSAg4qRbVC2Q7UtS98ZD";
 
@@ -356,9 +360,11 @@ namespace WebApplication1.Controllers
                 HttpContext.Session.SetString("SessionuAva", user.AvatarUrl);
                 HttpContext.Session.SetString("SessionuEmail", user.Email);
                 HttpContext.Session.SetString("SessionuDOB", (user.Dob).ToString());
+                TempData["isNormal"] = (from a in _context.Account where a.UId == HttpContext.Session.GetInt32("SessionuID") select a.Status).Single();
                 TempData["uid"] = HttpContext.Session.GetInt32("SessionuID");
                 TempData["username"] = HttpContext.Session.GetString("SessionuName");
                 TempData["userAva"] = HttpContext.Session.GetString("SessionuAva");
+                TempData["userEmail"] = HttpContext.Session.GetString("SessionuEmail");
                 return RedirectToAction("Index", "Home");
             }
         }
@@ -386,9 +392,11 @@ namespace WebApplication1.Controllers
                 HttpContext.Session.SetString("SessionuAva", listUser.AvatarUrl);
                 HttpContext.Session.SetString("SessionuEmail", listUser.Email);
                 HttpContext.Session.SetString("SessionuDOB", (listUser.Dob).ToString());
+                TempData["isNormal"] = (from a in _context.Account where a.UId == listUser.Id select a.Status).Single();
                 TempData["uid"] = HttpContext.Session.GetInt32("SessionuID");
                 TempData["username"] = HttpContext.Session.GetString("SessionuName");
                 TempData["userAva"] = HttpContext.Session.GetString("SessionuAva");
+                TempData["userEmail"] = HttpContext.Session.GetString("SessionuEmail");
                 return RedirectToAction("Index", "Home");
             }
             catch (Exception)
@@ -439,9 +447,11 @@ namespace WebApplication1.Controllers
                 HttpContext.Session.SetString("SessionuAva", user.AvatarUrl);
                 HttpContext.Session.SetString("SessionuEmail", user.Email);
                 HttpContext.Session.SetString("SessionuDOB", (user.Dob).ToString());
+                TempData["isNormal"] = (from a in _context.Account where a.UId == HttpContext.Session.GetInt32("SessionuID") select a.Status).Single();
                 TempData["uid"] = HttpContext.Session.GetInt32("SessionuID");
                 TempData["username"] = HttpContext.Session.GetString("SessionuName");
                 TempData["userAva"] = HttpContext.Session.GetString("SessionuAva");
+                TempData["userEmail"] = HttpContext.Session.GetString("SessionuEmail");
                 return RedirectToAction("Index", "Home");
             }
            
@@ -635,9 +645,11 @@ namespace WebApplication1.Controllers
                 HttpContext.Session.SetString("SessionuAva", user.AvatarUrl);
                 HttpContext.Session.SetString("SessionuEmail", user.Email);
                 HttpContext.Session.SetString("SessionuDOB", (user.Dob).ToString());
+                TempData["isNormal"] = (from account in _context.Account where account.UId == HttpContext.Session.GetInt32("SessionuID") select account.Status).Single();
                 TempData["uid"] = HttpContext.Session.GetInt32("SessionuID");
                 TempData["username"] = HttpContext.Session.GetString("SessionuName");
                 TempData["userAva"] = HttpContext.Session.GetString("SessionuAva");
+                TempData["userEmail"] = HttpContext.Session.GetString("SessionuEmail");
                 return RedirectToAction("Index", "Home");
             }
             else

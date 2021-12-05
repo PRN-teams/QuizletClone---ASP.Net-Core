@@ -229,6 +229,8 @@ C:\Users\Macbook Pro\Source\Repos\QuizletClone---ASP.Net-Core\WebApplication1\bi
 C:\Users\Macbook Pro\Source\Repos\QuizletClone---ASP.Net-Core\WebApplication1\bin\Debug\netcoreapp3.1\Google.Apis.Core.dll
 C:\Users\Macbook Pro\Source\Repos\QuizletClone---ASP.Net-Core\WebApplication1\bin\Debug\netcoreapp3.1\Google.Apis.PeopleService.v1.dll
 C:\Users\Macbook Pro\Source\Repos\QuizletClone---ASP.Net-Core\WebApplication1\obj\Debug\netcoreapp3.1\Razor\Views\Home\TwoFactor.cshtml.g.cs
-C:\Users\Macbook Pro\source\repos\QuizletClone---ASP.Net-Core\WebApplication1\obj\Debug\netcoreapp3.1\WebApplication1.csproj.AssemblyReference.cache
 C:\Users\Macbook Pro\source\repos\QuizletClone---ASP.Net-Core\WebApplication1\bin\Debug\netcoreapp3.1\WebMatrix.Data.dll
 C:\Users\Macbook Pro\source\repos\QuizletClone---ASP.Net-Core\WebApplication1\bin\Debug\netcoreapp3.1\WebMatrix.WebData.dll
+C:\Users\Macbook Pro\source\repos\QuizletClone---ASP.Net-Core\WebApplication1\obj\Debug\netcoreapp3.1\WebApplication1.csproj.AssemblyReference.cache
+C:\Users\Macbook Pro\source\repos\QuizletClone---ASP.Net-Core\WebApplication1\obj\Debug\netcoreapp3.1\Razor\Views\Payment\QuizletPlus.cshtml.g.cs
+C:\Users\Macbook Pro\source\repos\QuizletClone---ASP.Net-Core\WebApplication1\obj\Debug\netcoreapp3.1\Razor\Views\Payment\Index.cshtml.g.cs

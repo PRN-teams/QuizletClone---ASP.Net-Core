@@ -1,87 +1,66 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+using Razorpay.Api;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using WebApplication1.Models;
 
 namespace WebApplication1.Controllers
 {
     public class PaymentController : Controller
     {
-        // GET: PaymentController
-        public ActionResult Index()
+        
+        private readonly ILogger<PaymentController> _logger;
+        private readonly DBQuizSharpContext _context;
+        private readonly IConfiguration _config;
+
+        public PaymentController(ILogger<PaymentController> logger, DBQuizSharpContext context, IConfiguration config)
         {
-            return View();
+            _logger = logger;
+            _context = context;
+            _config = config;
         }
 
-        // GET: PaymentController/Details/5
-        public ActionResult Details(int id)
+        public ActionResult QuizletPlus()
         {
-            return View();
+            var _key = _config["Authentication:RazorPay:KeyId"];
+            Bill bill = new Bill()
+            {
+                Amount = (float)35.99,
+                Currency = "USD",
+                Description = $"Transaction of customer {@TempData.Peek("username")} in {DateTime.Now}",
+                UId = Convert.ToInt32(@TempData.Peek("uid")),
+                Date = DateTime.Now,
+            };
+            bill.OrderId = CreateOrder(bill);
+            ViewBag.Key = _key;
+            return View(bill);
         }
 
-        // GET: PaymentController/Create
-        public ActionResult Create()
+        private string CreateOrder(Bill bill)
         {
-            return View();
-        }
-
-        // POST: PaymentController/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
-        {
+            var _key = _config["Authentication:RazorPay:KeyId"];
+            var _keysecret = _config["Authentication:RazorPay:KeySecret"];
             try
             {
-                return RedirectToAction(nameof(Index));
+                RazorpayClient client = new RazorpayClient(_key, _keysecret);
+                Dictionary<string, object> options = new Dictionary<string, object>();
+                options.Add("amount", 3599); // amount in the smallest currency unit
+                options.Add("receipt", $"order_rcptid_{@TempData.Peek("uid")}");
+                options.Add("currency", bill.Currency);
+                Order order = client.Order.Create(options);
+                var orderID = order.Attributes["id"].ToString();    
+                return orderID;
             }
-            catch
+            catch (Exception)
             {
-                return View();
-            }
-        }
-
-        // GET: PaymentController/Edit/5
-        public ActionResult Edit(int id)
-        {
-            return View();
-        }
-
-        // POST: PaymentController/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-        // GET: PaymentController/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
-
-        // POST: PaymentController/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
+                return null;
             }
         }
     }
 }
+       
