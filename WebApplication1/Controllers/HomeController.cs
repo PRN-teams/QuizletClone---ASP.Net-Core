@@ -73,7 +73,7 @@ namespace WebApplication1.Controllers
                 var set = (from myset in mylist where myset.Key.Username == HttpContext.Session.GetString("SessionuName").ToString() select myset).ToList();
                 ViewBag.MySet = set;
             }
-            catch (System.Exception)
+            catch (Exception)
             {
 
                 TempData.Clear();
@@ -81,7 +81,7 @@ namespace WebApplication1.Controllers
             }
             ViewBag.QuizSet = mylist;
             ViewBag.TotalQuiz = gettotalTerm;
-            return View();
+           return View();
         }
 
         public IActionResult Privacy()
@@ -252,6 +252,15 @@ namespace WebApplication1.Controllers
                     HttpContext.Session.SetString("SessionuAva", listUser.AvatarUrl);
                     HttpContext.Session.SetString("SessionuEmail", listUser.Email);
                     HttpContext.Session.SetString("SessionuDOB", (listUser.Dob).ToString());
+                    var exprDate = (from c in _context.Contract where c.Uid == listUser.Id select c.ExpiredDate).FirstOrDefault();
+                    if (exprDate != null){
+                    if (exprDate == DateTime.Today)  {
+                        Account account = (from a in _context.Account where a.UId == listUser.Id select a).FirstOrDefault();
+                        account.Status = "normal";
+                        _context.Update(account);
+                        _context.SaveChanges();
+                     }
+                   }
                     TempData["isNormal"] = (from a in _context.Account where a.UId == listUser.Id select a.Status).Single();
                     TempData["uid"] = HttpContext.Session.GetInt32("SessionuID");
                     TempData["username"] = HttpContext.Session.GetString("SessionuName");
@@ -292,7 +301,17 @@ namespace WebApplication1.Controllers
                 HttpContext.Session.SetString("SessionuAva", listUser.AvatarUrl);
                 HttpContext.Session.SetString("SessionuEmail", listUser.Email);
                 HttpContext.Session.SetString("SessionuDOB", (listUser.Dob).ToString());
-                TempData["isNormal"] = (from a in _context.Account where a.UId == listUser.Id select a.Status).Single();
+                var exprDate = (from c in _context.Contract where c.Uid == listUser.Id select c.ExpiredDate).FirstOrDefault();
+                if (exprDate != null)
+                {
+                    if (exprDate == DateTime.Today)
+                    {
+                        Account account = (from a in _context.Account where a.UId == listUser.Id select a).FirstOrDefault();
+                        account.Status = "normal";
+                        _context.Update(account);
+                        _context.SaveChanges();
+                    }
+                }
                 TempData["uid"] = HttpContext.Session.GetInt32("SessionuID");
                 TempData["username"] = HttpContext.Session.GetString("SessionuName");
                 TempData["userAva"] = HttpContext.Session.GetString("SessionuAva");
@@ -397,6 +416,17 @@ namespace WebApplication1.Controllers
                 HttpContext.Session.SetString("SessionuAva", listUser.AvatarUrl);
                 HttpContext.Session.SetString("SessionuEmail", listUser.Email);
                 HttpContext.Session.SetString("SessionuDOB", (listUser.Dob).ToString());
+                var exprDate = (from c in _context.Contract where c.Uid == listUser.Id select c.ExpiredDate).FirstOrDefault();
+                if (exprDate != null)
+                {
+                    if (exprDate == DateTime.Today)
+                    {
+                        Account account = (from a in _context.Account where a.UId == listUser.Id select a).FirstOrDefault();
+                        account.Status = "normal";
+                        _context.Update(account);
+                        _context.SaveChanges();
+                    }
+                }
                 TempData["isNormal"] = (from a in _context.Account where a.UId == listUser.Id select a.Status).Single();
                 TempData["uid"] = HttpContext.Session.GetInt32("SessionuID");
                 TempData["username"] = HttpContext.Session.GetString("SessionuName");

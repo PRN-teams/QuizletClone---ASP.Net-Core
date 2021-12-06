@@ -39,7 +39,7 @@ namespace WebApplication1.Controllers
                 Description = $"Transaction of customer {@TempData.Peek("username")} in {DateTime.Now}",
                 UId = Convert.ToInt32(@TempData.Peek("uid")),
                 Date = DateTime.Now,
-                U = (from u in _context.User where u.Id == Convert.ToInt32(TempData.Peek("uid")) select u).Single()
+                //U = (from u in _context.User where u.Id == Convert.ToInt32(TempData.Peek("uid")) select u).Single()
             };
             bill.OrderId = CreateOrder(bill);
             ViewBag.Key = _key;
@@ -94,6 +94,7 @@ namespace WebApplication1.Controllers
                 _context.Add(contract);
                 _context.Update(user);
                 _context.SaveChanges();
+                TempData["isNormal"] = "premium";
                 return RedirectToAction("Index", "Home");
             }
             else
