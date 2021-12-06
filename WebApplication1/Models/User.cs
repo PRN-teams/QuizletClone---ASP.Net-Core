@@ -11,6 +11,7 @@ namespace WebApplication1.Models
     {
         public User()
         {
+            Account = new HashSet<Account>();
             Bill = new HashSet<Bill>();
             Contract = new HashSet<Contract>();
             SetStudy = new HashSet<SetStudy>();
@@ -23,6 +24,7 @@ namespace WebApplication1.Models
         public string Email { get; set; }
         public DateTime? Dob { get; set; }
 
+        public virtual ICollection<Account> Account { get; set; }
         public virtual ICollection<Bill> Bill { get; set; }
         public virtual ICollection<Contract> Contract { get; set; }
         public virtual ICollection<SetStudy> SetStudy { get; set; }

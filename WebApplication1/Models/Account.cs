@@ -12,6 +12,7 @@ namespace WebApplication1.Models
         public int UId { get; set; }
         public string Status { get; set; }
         public string Role { get; set; }
+        public int AccountId { get; set; }
 
         public virtual User U { get; set; }
     }

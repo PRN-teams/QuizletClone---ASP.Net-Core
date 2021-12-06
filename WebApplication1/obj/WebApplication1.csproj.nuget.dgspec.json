@@ -1,20 +1,24 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Macbook Pro\\source\\repos\\QuizletClone---ASP.Net-Core\\WebApplication1\\WebApplication1.csproj": {}
+    "C:\\Users\\trath\\Source\\Repos\\QuizletClone---ASP.Net-Core\\WebApplication1\\WebApplication1.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Macbook Pro\\source\\repos\\QuizletClone---ASP.Net-Core\\WebApplication1\\WebApplication1.csproj": {
+    "C:\\Users\\trath\\Source\\Repos\\QuizletClone---ASP.Net-Core\\WebApplication1\\WebApplication1.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Macbook Pro\\source\\repos\\QuizletClone---ASP.Net-Core\\WebApplication1\\WebApplication1.csproj",
+        "projectUniqueName": "C:\\Users\\trath\\Source\\Repos\\QuizletClone---ASP.Net-Core\\WebApplication1\\WebApplication1.csproj",
         "projectName": "WebApplication1",
-        "projectPath": "C:\\Users\\Macbook Pro\\source\\repos\\QuizletClone---ASP.Net-Core\\WebApplication1\\WebApplication1.csproj",
-        "packagesPath": "C:\\Users\\Macbook Pro\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Macbook Pro\\source\\repos\\QuizletClone---ASP.Net-Core\\WebApplication1\\obj\\",
+        "projectPath": "C:\\Users\\trath\\Source\\Repos\\QuizletClone---ASP.Net-Core\\WebApplication1\\WebApplication1.csproj",
+        "packagesPath": "C:\\Users\\trath\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\trath\\Source\\Repos\\QuizletClone---ASP.Net-Core\\WebApplication1\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
         "configFilePaths": [
-          "C:\\Users\\Macbook Pro\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\trath\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [

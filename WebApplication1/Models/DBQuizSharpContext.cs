@@ -41,7 +41,7 @@ namespace WebApplication1.Models
         {
             modelBuilder.Entity<Account>(entity =>
             {
-                entity.HasNoKey();
+                entity.Property(e => e.AccountId).HasColumnName("accountID");
 
                 entity.Property(e => e.Role)
                     .HasColumnName("role")
@@ -54,7 +54,7 @@ namespace WebApplication1.Models
                 entity.Property(e => e.UId).HasColumnName("uID");
 
                 entity.HasOne(d => d.U)
-                    .WithMany()
+                    .WithMany(p => p.Account)
                     .HasForeignKey(d => d.UId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Account_User");
@@ -240,15 +240,13 @@ namespace WebApplication1.Models
                     .HasColumnType("date");
 
                 entity.Property(e => e.Email)
-                    .IsRequired()
                     .HasColumnName("email")
                     .HasMaxLength(100)
                     .IsUnicode(false);
 
                 entity.Property(e => e.Password)
                     .HasColumnName("password")
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
+                    .HasMaxLength(50);
 
                 entity.Property(e => e.Username)
                     .IsRequired()

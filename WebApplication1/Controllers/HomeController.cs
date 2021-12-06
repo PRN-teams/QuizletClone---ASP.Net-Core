@@ -331,6 +331,7 @@ namespace WebApplication1.Controllers
             {
                 User user = new User();
                 user.Email = email;
+                string role = user.Email.Contains(".fpt.edu.vn") ? "admin" : "member";
                 user.Username = result.Principal.FindFirstValue(ClaimTypes.Name);
                 user.Dob = Convert.ToDateTime(result.Principal.FindFirstValue(ClaimTypes.DateOfBirth));
                 user.AvatarUrl = $"https://graph.facebook.com/{result.Principal.FindFirstValue(ClaimTypes.NameIdentifier)}/picture";
@@ -354,6 +355,10 @@ namespace WebApplication1.Controllers
                 }
                 */
                 _context.Add(user);
+                _context.SaveChanges();
+                int maxValue = (from q in _context.User select q.Id).ToList().OrderByDescending(x => x).First();
+                Account account = new Account() { UId = maxValue, Status = "normal", Role = role, U = (from u in _context.User where u.Id == maxValue select u).Single() };
+                _context.Add(account);
                 _context.SaveChanges();
                 HttpContext.Session.SetString("SessionuName", user.Username);
                 HttpContext.Session.SetInt32("SessionuID", (from u in _context.User where u.Email == user.Email select u.Id).SingleOrDefault());
@@ -414,6 +419,7 @@ namespace WebApplication1.Controllers
         [GoogleScopedAuthorize(PeopleServiceService.ScopeConstants.UserinfoProfile)]
         public async Task<IActionResult> GoogleRegister([FromServices] IGoogleAuthProvider auth)
         {
+            
             var cred = await auth.GetCredentialAsync();
             var service = new PeopleServiceService(new BaseClientService.Initializer()
             {
@@ -439,8 +445,13 @@ namespace WebApplication1.Controllers
                 User user = new User();
                 user.Email = person.EmailAddresses.FirstOrDefault()?.Value;
                 user.AvatarUrl = person.Photos.FirstOrDefault().Url;
+                string role = user.Email.Contains(".fpt.edu.vn") ? "admin" : "member";
                 user.Username = person.Names.FirstOrDefault().DisplayName;
                 _context.Add(user);
+                _context.SaveChanges();
+                int maxValue = (from q in _context.User select q.Id).ToList().OrderByDescending(x => x).First();
+                Account account = new Account() { UId = maxValue,Status ="normal",Role=role,U=(from u in _context.User where u.Id == maxValue select u).Single()};
+                _context.Add(account);
                 _context.SaveChanges();
                 HttpContext.Session.SetString("SessionuName", user.Username);
                 HttpContext.Session.SetInt32("SessionuID", (from u in _context.User where u.Email == user.Email select u.Id).SingleOrDefault());

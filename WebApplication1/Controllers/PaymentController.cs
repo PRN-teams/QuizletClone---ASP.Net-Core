@@ -87,6 +87,13 @@ namespace WebApplication1.Controllers
                 Bill bill = JsonConvert.DeserializeObject<Bill>(TempData["Bill"].ToString());
                 bill.Status = paymentStatus;
                 _context.Add(bill);
+                _context.SaveChanges();
+                var user = (from u in _context.Account where u.UId == Convert.ToInt32(TempData.Peek("uid")) select u).Single();
+                user.Role = "premium";
+                Contract contract = new Contract() { StartDate = DateTime.Now, ExpiredDate = DateTime.Today.AddYears(1), U = (from u in _context.User where u.Id == Convert.ToInt32(TempData.Peek("uid")) select u).Single(), Uid = Convert.ToInt32(TempData.Peek("uid")) };
+                _context.Add(contract);
+                _context.Update(user);
+                _context.SaveChanges();
                 return RedirectToAction("Index", "Home");
             }
             else
