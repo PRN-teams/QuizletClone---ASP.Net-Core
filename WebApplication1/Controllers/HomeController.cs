@@ -65,7 +65,7 @@ namespace WebApplication1.Controllers
                           }).ToList();
             foreach (var item in result)
             {
-                mylist.Add(new Models.User { Id = item.uID, Username = item.uName, AvatarUrl = item.uAvar }, new SetStudy { Id = item.sID, Title = item.sTitle });
+                mylist.Add(new User { Id = item.uID, Username = item.uName, AvatarUrl = item.uAvar }, new SetStudy { Id = item.sID, Title = item.sTitle });
                 gettotalTerm.Add(item.sID, item.totalTerm);
             }
             try
@@ -75,9 +75,13 @@ namespace WebApplication1.Controllers
             }
             catch (Exception)
             {
-
                 TempData.Clear();
                 return RedirectToAction("Privacy", "Home");
+            }
+            var status = (from a in _context.Account where a.UId == HttpContext.Session.GetInt32("SessionuID") select a.Status).SingleOrDefault();
+            if (status!=null)
+            {
+                TempData["isNormal"] = status;
             }
             ViewBag.QuizSet = mylist;
             ViewBag.TotalQuiz = gettotalTerm;
@@ -202,15 +206,23 @@ namespace WebApplication1.Controllers
         [HttpPost]
         public IActionResult CreateQuiz(SetStudy set)
         {
-            set.IsPrivate = int.Parse(Request.Form["Visibility"].ToString()) == 2 ? false : true;
-            set.UserId = (int)TempData.Peek("uid");
+            var get = Request.Form["Visibility"].ToString();
+            if (!String.IsNullOrEmpty(get))
+            {
+                set.IsPrivate = int.Parse(Request.Form["Visibility"].ToString()) == 2 ? false : true;
+            }
+            else
+            {
+                set.IsPrivate = true;
+            }
+           set.UserId = (int)TempData.Peek("uid");
             set.CreatedDate = DateTime.Now;
-            int maxValue = (from q in _context.Quiz select q.Id).ToList().OrderByDescending(x => x).First();
             string term = Request.Form["Term"];
             List<string> getTerm = term.Split(',').ToList();
             string def = Request.Form["Def"];
             List<string> getDef = def.Split(',').ToList();
             List<Quiz> quizzes = new List<Quiz>();
+            List<int> index = new List<int>();
             for (int i = 1; i < getTerm.Count; i++)
             {
                 quizzes.Add(new Quiz { Term = getTerm[i], Definition = getDef[i] });
@@ -218,12 +230,16 @@ namespace WebApplication1.Controllers
             foreach (var item in quizzes)
             {
                 _context.Add(item);
+                _context.SaveChanges();
+                int maxValue = (from q in _context.Quiz select q.Id).ToList().OrderByDescending(x => x).First();
+                index.Add(maxValue);
             }
-            int setValue = (from q in _context.SetStudy select q.Id).ToList().OrderByDescending(x => x).First();
             _context.Add(set);
-            for (int i = maxValue + 1; i <= maxValue + quizzes.Count; i++)
+            _context.SaveChanges();
+            int setValue = (from q in _context.SetStudy select q.Id).ToList().OrderByDescending(x => x).First();
+            foreach (var item in index)
             {
-                SetStudyQuiz setStudyQuiz = new SetStudyQuiz() { QuizId = i, SetStudyId = setValue };
+                SetStudyQuiz setStudyQuiz = new SetStudyQuiz() { QuizId = item, SetStudyId = setValue };
                 _context.Add(setStudyQuiz);
             }
             _context.SaveChanges();
@@ -261,7 +277,6 @@ namespace WebApplication1.Controllers
                         _context.SaveChanges();
                      }
                    }
-                    TempData["isNormal"] = (from a in _context.Account where a.UId == listUser.Id select a.Status).Single();
                     TempData["uid"] = HttpContext.Session.GetInt32("SessionuID");
                     TempData["username"] = HttpContext.Session.GetString("SessionuName");
                     TempData["userAva"] = HttpContext.Session.GetString("SessionuAva");
@@ -384,7 +399,6 @@ namespace WebApplication1.Controllers
                 HttpContext.Session.SetString("SessionuAva", user.AvatarUrl);
                 HttpContext.Session.SetString("SessionuEmail", user.Email);
                 HttpContext.Session.SetString("SessionuDOB", (user.Dob).ToString());
-                TempData["isNormal"] = (from a in _context.Account where a.UId == HttpContext.Session.GetInt32("SessionuID") select a.Status).Single();
                 TempData["uid"] = HttpContext.Session.GetInt32("SessionuID");
                 TempData["username"] = HttpContext.Session.GetString("SessionuName");
                 TempData["userAva"] = HttpContext.Session.GetString("SessionuAva");
@@ -427,7 +441,6 @@ namespace WebApplication1.Controllers
                         _context.SaveChanges();
                     }
                 }
-                TempData["isNormal"] = (from a in _context.Account where a.UId == listUser.Id select a.Status).Single();
                 TempData["uid"] = HttpContext.Session.GetInt32("SessionuID");
                 TempData["username"] = HttpContext.Session.GetString("SessionuName");
                 TempData["userAva"] = HttpContext.Session.GetString("SessionuAva");
@@ -488,7 +501,6 @@ namespace WebApplication1.Controllers
                 HttpContext.Session.SetString("SessionuAva", user.AvatarUrl);
                 HttpContext.Session.SetString("SessionuEmail", user.Email);
                 HttpContext.Session.SetString("SessionuDOB", (user.Dob).ToString());
-                TempData["isNormal"] = (from a in _context.Account where a.UId == HttpContext.Session.GetInt32("SessionuID") select a.Status).Single();
                 TempData["uid"] = HttpContext.Session.GetInt32("SessionuID");
                 TempData["username"] = HttpContext.Session.GetString("SessionuName");
                 TempData["userAva"] = HttpContext.Session.GetString("SessionuAva");
@@ -686,7 +698,6 @@ namespace WebApplication1.Controllers
                 HttpContext.Session.SetString("SessionuAva", user.AvatarUrl);
                 HttpContext.Session.SetString("SessionuEmail", user.Email);
                 HttpContext.Session.SetString("SessionuDOB", (user.Dob).ToString());
-                TempData["isNormal"] = (from account in _context.Account where account.UId == HttpContext.Session.GetInt32("SessionuID") select account.Status).Single();
                 TempData["uid"] = HttpContext.Session.GetInt32("SessionuID");
                 TempData["username"] = HttpContext.Session.GetString("SessionuName");
                 TempData["userAva"] = HttpContext.Session.GetString("SessionuAva");

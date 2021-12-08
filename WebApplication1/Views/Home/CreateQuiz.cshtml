@@ -1,5 +1,7 @@
 ﻿@model WebApplication1.Models.SetStudy
-@{ViewData["Title"] = "Create Quiz"; }
+@{
+    ViewData["Title"] = "Create Quiz";
+}
 <style>
     #form12 {
         border-top: none;
@@ -20,27 +22,52 @@
         width: 30rem;
     }
 
+        #form1:focus {
+            outline: none;
+            border-bottom: 3px solid #ffcd1f;
+        }
+
     input:focus {
         outline: none;
-        border-bottom-color: yellow;
     }
+
 </style>
+@section Scripts {
+<script>//transfer Input
+       const divs = document.querySelectorAll(".term");
+       const inputs = document.querySelectorAll("#getTerm");
+          divs.forEach((div,index ) => {
+            div.addEventListener("input", function() {
+            inputs[index].value =div.textContent.replace(/,/g, ";");
+    }, false)
+    });
+
+     //transfer Input
+       const defs = document.querySelectorAll(".def");
+       const getDef = document.querySelectorAll("#getDef");
+          defs.forEach((def,indexer ) => {
+            def.addEventListener("input", function() {
+            getDef[indexer].value =def.textContent.replace(/,/g, ";");
+    }, false)
+    });
+</script>
+}
 @using (Html.BeginForm("CreateQuiz", "Home", FormMethod.Post))
 {
     <form>
 
         <div class="clearfix  mt-5 ">
             <h1 class="text-warning float-left">Create new Quiz <img src="~/img/science.png" style="width:5%;height:5%" /></h1>
-            <button class="btn btn-info float-right" type="submit">Create</button>
+            <button class="btn sbmit-button btn-info float-right" type="submit">Create</button>
         </div>
 
         <div class="mt-3">
             <div>
-                @Html.TextBoxFor(model => model.Title, new { @required = "required", @type = "text", @id = "form12", @class = "mt-3 text-info h5 text-uppercase", @placeholder = "Nhập tiêu đề, ví dụ 'Sinh học - Chương 22: Tiến hóa'" })
+                @Html.TextBoxFor(model => model.Title, new {@required = "required", @type = "text", @id = "form12", @class = "mt-3 text-info h5 text-uppercase", @placeholder = "Nhập tiêu đề, ví dụ 'Sinh học - Chương 22: Tiến hóa'" })
                 <br />
                 <label class="text-light">Title</label>
                 <br />
-                @Html.TextBoxFor(model => model.Description, new { @required = "required", @type = "text", @id = "form12", @class = "mt-3 text-info h5", @placeholder = "Thêm mô tả..." })
+                @Html.TextBoxFor(model => model.Description, new {@required = "required", @type = "text", @id = "form12", @class = "mt-3 text-info h5", @placeholder = "Thêm mô tả..." })
                 <br />
                 <label class="text-light">Description</label>
             </div>
@@ -51,7 +78,14 @@
                 <img class="card-img" src="~/img/science.png" alt="Card image" style="width:5%;height:25%">
                 <div class="card-img-overlay">
                     <h5 class="card-title text-light">Drag and drop a picture to adding a diagram</h5>
-                    <p class="card-text"><i class="fas fa-lock"></i> Unlock this feature with <a class="text-warning">QuizletPlus</a></p>
+                    @if (@TempData.Peek("isNormal").Equals("normal"))
+                    {
+                        <p class="card-text"><i class="fas fa-lock"></i> Unlock this feature with <a class="text-warning" asp-controller="Payment" asp-action="QuizletPlus">QuizletPlus</a></p>
+                    }
+                    else
+                    {
+                        <a class="text-warning">Choose a picture</a>
+                    }
                 </div>
             </div>
         </div>
@@ -68,13 +102,13 @@
                         </div>
                         <div class="card-body" style="display:flex;justify-content:space-between">
                             <div>
-                                @Html.TextBox("Term", null, new { @required = "required", @type = "text", @id = "form1", @class = "mt-3 text-light bg-dark h5" })
-                                <br />
+                                <div class="mt-3 text-light bg-dark h5 term" contenteditable="true" id="form1" required="required" type="text" role="textbox" aria-multiline="true"></div>
+                                @Html.TextBox("Term", null, new {@type = "hidden", @id="getTerm"})
                                 <label class="text-light">Term</label>
                             </div>
                             <div>
-                                @Html.TextBox("Def", null, new { @required = "required", @type = "text", @id = "form1", @class = "mt-3 text-light bg-dark h5" })
-                                <br />
+                                <div class="mt-3 text-light bg-dark h5 def" contenteditable="true" id="form1" required="required" type="text" role="textbox" aria-multiline="true" aria-required="true"></div>
+                                @Html.TextBox("Def", null, new {@type = "hidden", @id="getDef"})
                                 <label class="text-light">Definition</label>
                                 <div class="clearfix">
                                     <div style="border:dotted;display:flex;flex-direction:column;align-items:center" class="float-right">
@@ -86,42 +120,43 @@
                         </div>
                     </div>
                 }
-                @for (int i = 6; i <= 20; i++)
-                {
-                    <div class="card bg-dark text-light my-3">
-                        <div class="card-header clearfix">
-                            <p class="float-left">@i</p>
-                        </div>
-                        <div class="card-body" style="display:flex;justify-content:space-between">
-                            <div>
-                                @Html.TextBox("Term", null, new { @type = "text", @id = "form1", @class = "mt-3 text-light bg-dark h5" })
-                                <br />
-                                <label class="text-light">Term</label>
+                <div>
+                    @for (int i = 6; i <= 20; i++)
+                    {
+                        <div class="card bg-dark text-light my-3">
+                            <div class="card-header clearfix">
+                                <p class="float-left">@i</p>
                             </div>
-                            <div>
-                                @Html.TextBox("Def", null, new { @type = "text", @id = "form1", @class = "mt-3 text-light bg-dark h5" })
-                                <br />
-                                <label class="text-light">Definition</label>
-                                <div class="clearfix">
-                                    <div style="border:dotted;display:flex;flex-direction:column;align-items:center" class="float-right">
-                                        <i class="far fa-image py-1 px-2 "></i>
-                                        <p class="px-2 ">Add Image</p>
+                            <div class="card-body" style="display:flex;justify-content:space-between">
+                                <div>
+                                    <div class="mt-3 text-light bg-dark h5 term" contenteditable="true" id="form1" name="Term" type="text" role="textbox" aria-multiline="true" aria-required="true"></div>
+                                    @Html.TextBox("Term", null, new {@type = "hidden", @id="getTerm"})
+                                    <label class="text-light">Term</label>
+                                </div>
+                                <div>
+                                    <div class="mt-3 text-light bg-dark h5 def" contenteditable="true" id="form1" name="Def" type="text" role="textbox" aria-multiline="true" aria-required="true"></div>
+                                    @Html.TextBox("Def", null, new {@type = "hidden", @id="getDef"})
+                                    <label class="text-light">Definition</label>
+                                    <div class="clearfix">
+                                        <div style="border:dotted;display:flex;flex-direction:column;align-items:center" class="float-right">
+                                            <i class="far fa-image py-1 px-2 "></i>
+                                            <p class="px-2 ">Add Image</p>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                }
+                    }
 
-                <div class="card text-white bg-primary mb-3">
-                    <div class="card-body" style="display: flex; flex-direction: column; align-items: center;">
-                        <h5 class="card-title">Add new Card</h5>
-                        <i class="fas fa-plus-square fa-2x" style="cursor:pointer"></i>
+                    <div class="card text-white bg-primary mb-3">
+                        <div class="card-body" style="display: flex; flex-direction: column; align-items: center;">
+                            <h5 class="card-title">Add new Card</h5>
+                            <i class="fas fa-plus-square fa-2x" style="cursor:pointer"></i>
+                        </div>
                     </div>
+
                 </div>
-
             </div>
-        </div>
     </form>
 }
 
